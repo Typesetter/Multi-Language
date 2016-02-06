@@ -21,6 +21,7 @@ class MultiLang_Admin extends MultiLang_Common{
 		$this->cmds['SelectLanguages']		= '';
 		$this->cmds['PrimaryLanguage']		= '';
 		$this->cmds['PrimaryLanguageSave']	= 'DefaultDisplay';
+		$this->cmds['AllTitles']				= '';
 
 		$cmd = common::GetCommand();
 		$this->RunCommands($cmd);
@@ -189,7 +190,7 @@ class MultiLang_Admin extends MultiLang_Common{
 		global $gp_index;
 
 		//get some data
-		$per_lang = array();
+		$per_lang	= array();
 		$list_sizes = array();
 		foreach($this->lists as $list_index => $list){
 
@@ -256,11 +257,10 @@ class MultiLang_Admin extends MultiLang_Common{
 		// # of pages per language
 		foreach($per_lang as $lang => $count){
 			echo '<tr><td>';
+			echo common::Link('Admin_MultiLang',$this->avail_langs[$lang],'cmd=AllTitles');
 
 			if( $lang == $this->lang ){
-				echo '<b>'.$this->avail_langs[$lang].'</b><br/>'.common::Link('Admin_MultiLang','Primary Language','cmd=PrimaryLanguage','name="gpabox"').'</i>';
-			}else{
-				echo ''.$this->avail_langs[$lang];
+				echo ' - '.common::Link('Admin_MultiLang','Primary Language','cmd=PrimaryLanguage','name="gpabox"');
 			}
 
 			echo '</td><td>'.number_format($count).'</td></tr>';
@@ -296,6 +296,7 @@ class MultiLang_Admin extends MultiLang_Common{
 	 *
 	 */
 	public function ShowMenu($menu, $id, $menu_label){
+		global $langmessage;
 
 		echo '<h3>';
 		echo common::Link('Admin_Menu',$menu_label,'menu='.$id,array('data-arg'=>'cnreq'));
@@ -343,7 +344,7 @@ class MultiLang_Admin extends MultiLang_Common{
 
 
 			echo '<td>';
-			echo common::Link('Admin_MultiLang','Options','cmd=TitleSettings&index='.$page_index,' name="gpabox"');
+			echo common::Link('Admin_MultiLang',$langmessage['options'],'cmd=TitleSettings&index='.$page_index,' name="gpabox"');
 			echo '</td></tr>';
 			$i++;
 		}
@@ -378,7 +379,7 @@ class MultiLang_Admin extends MultiLang_Common{
 	 *
 	 */
 	public function NotTranslated(){
-		global $gp_index, $config, $gp_menu, $page;
+		global $gp_index, $config, $gp_menu, $page, $langmessage;
 
 		$page->head_js[] = '/include/thirdparty/tablesorter/tablesorter.js';
 		$page->jQueryCode .= '$("table.tablesorter").tablesorter({cssHeader:"gp_header",cssAsc:"gp_header_asc",cssDesc:"gp_header_desc"});';
@@ -422,7 +423,7 @@ class MultiLang_Admin extends MultiLang_Common{
 			echo implode(', ',$which_menus);
 
 			echo '</td><td>';
-			echo common::Link('Admin_MultiLang','Options','cmd=TitleSettings&index='.$page_index,' name="gpabox"');
+			echo common::Link('Admin_MultiLang',$langmessage['options'],'cmd=TitleSettings&index='.$page_index,' name="gpabox"');
 			echo '</td></tr>';
 		}
 		echo '</tbody>';
@@ -788,6 +789,44 @@ class MultiLang_Admin extends MultiLang_Common{
 		echo ' - ';
 		echo common::Link('Admin_MultiLang','Languages','cmd=SelectLanguages');
 		echo '</p>';
+
+	}
+
+
+	/**
+	 * View all pages of the requested language
+	 *
+	 */
+	public function AllTitles(){
+		global $langmessage;
+
+		echo '<h2>'.$langmessage['Pages'].'</h2>';
+
+		foreach($this->lists as $list_index => $list){
+			foreach($list as $lang => $index){
+				$lang_lists[$lang][] = $index;
+			}
+		}
+
+
+		foreach( $lang_lists as $lang => $indexes){
+			echo '<div class="ml_stats"><div>';
+			echo '<table class="bordered striped">';
+			echo '<thead><tr><th>'.$this->avail_langs[$lang].'</th><th>'.$langmessage['options'].'</th></tr>';
+			echo '<tbody>';
+			foreach($indexes as $index){
+				echo '<tr><td>';
+				$title = common::IndexToTitle($index);
+				echo common::Link_Page($title);
+				echo '</td><td>';
+				echo common::Link('Admin_MultiLang',$langmessage['options'],'cmd=TitleSettings&index='.$index,' name="gpabox"');
+				echo '</td></tr>';
+			}
+
+			echo '</tbody>';
+			echo '</table>';
+			echo '</div></div>';
+		}
 
 	}
 
