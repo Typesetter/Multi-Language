@@ -111,11 +111,8 @@ class MultiLang_Admin extends MultiLang_Common{
 		$this->config['primary']	= $primary;
 
 		if( $this->SaveConfig() ){
-			message($langmessage['SAVED']);
 			$this->lang				= $primary;
 			$this->language			= $this->avail_langs[$this->lang];
-		}else{
-			message($langmessage['OOPS']);
 		}
 	}
 
@@ -142,11 +139,7 @@ class MultiLang_Admin extends MultiLang_Common{
 
 		$this->config['langs'] = $langs;
 
-		if( $this->SaveConfig() ){
-			message($langmessage['SAVED']);
-		}else{
-			message($langmessage['OOPS']);
-		}
+		$this->SaveConfig();
 	}
 
 	public function SelectLanguages(){
@@ -434,9 +427,11 @@ class MultiLang_Admin extends MultiLang_Common{
 	 * Save the current configuration
 	 * If successful, reset the lists and titles variables
 	 */
-	public function SaveConfig(){
+	public function SaveConfig($refresh_msg = false){
+		global $langmessage;
 
 		if( !gpFiles::SaveArray($this->config_file,'config',$this->config) ){
+			message($langmessage['OOPS']);
 			return false;
 		}
 
@@ -444,6 +439,12 @@ class MultiLang_Admin extends MultiLang_Common{
 		$this->titles	= $this->config['titles'];
 		if( count($this->config['langs']) ){
 			$this->langs = $this->config['langs'];
+		}
+
+		if( $refresh_msg ){
+			message($langmessage['SAVED'].' '.$langmessage['REFRESH']);
+		}else{
+			message($langmessage['SAVED']);
 		}
 
 		return true;
@@ -563,13 +564,7 @@ class MultiLang_Admin extends MultiLang_Common{
 		$this->config['titles'][$to_index]					= $list_index;
 
 
-		if( $this->SaveConfig() ){
-			message($langmessage['SAVED'].' '.$langmessage['REFRESH']);
-			return true;
-		}
-
-		message($langmessage['OOPS']);
-		return false;
+		return $this->SaveConfig(true);
 	}
 
 
@@ -772,11 +767,7 @@ class MultiLang_Admin extends MultiLang_Common{
 			unset($this->config['lists'][$list_index]);
 		}
 
-		if( $this->SaveConfig() ){
-			message($langmessage['SAVED'].' '.$langmessage['REFRESH']);
-		}else{
-			message($langmessage['OOPS']);
-		}
+		$this->SaveConfig(true);
 	}
 
 	public function SmLinks(){
