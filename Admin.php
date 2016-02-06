@@ -235,9 +235,6 @@ class MultiLang_Admin extends MultiLang_Common{
 		echo '</table></div></div>';
 
 		$this->PageCount($per_lang);
-
-		//Show lists
-		//$this->PageLists($list_sizes);
 	}
 
 
@@ -270,36 +267,6 @@ class MultiLang_Admin extends MultiLang_Common{
 		}
 		echo '</table></div></div>';
 	}
-
-
-	/*
-	public function PageLists($list_sizes){
-
-		echo '<h3>Page Lists</h3>';
-		$lang_label = $this->avail_langs[$this->lang];
-		asort($list_sizes);
-		echo '<table class="bordered full_width"><tr><th>Page in Primary Language</th><th>Number of Associated Pages</th><th>&nbsp;</th></tr>';
-		foreach($list_sizes as $list_index => $size){
-			$list = $this->lists[$list_index];
-			echo '<tr><td>';
-			if( isset($list[$this->lang]) ){
-				$page_index = $list[$this->lang];
-			}else{
-				$page_index = current($list);
-				$page_lang = key($list);
-				echo '('.$this->avail_langs[$page_lang].') ';
-			}
-			$title = common::IndexToTitle($page_index);
-			echo common::Link_Page($title);
-			echo '</td><td>';
-			echo $size;
-			echo '</td><td>';
-			echo common::Link('Admin_MultiLang','Options','cmd=TitleSettings&index='.$page_index,' name="gpabox"');
-			echo '</td></tr>';
-		}
-		echo '</table>';
-	}
-	*/
 
 
 	/**
@@ -417,8 +384,12 @@ class MultiLang_Admin extends MultiLang_Common{
 		$page->jQueryCode .= '$("table.tablesorter").tablesorter({cssHeader:"gp_header",cssAsc:"gp_header_asc",cssDesc:"gp_header_desc"});';
 
 
-		$menu_info['gp_menu'] = $gp_menu;
+		$menu_info				= array();
+		$menu_info['gp_menu']	= $gp_menu;
+
+		$menu_labels			= array();
 		$menu_labels['gp_menu'] = 'Main Menu';
+
 		if( isset($config['menus']) ){
 			foreach($config['menus'] as $menu => $label){
 				$menu_info[$menu] = gpOutput::GetMenuArray($menu);
