@@ -8,6 +8,9 @@ class MultiLang_Admin extends MultiLang_Common{
 	protected $cmds				= array();		//executable commands
 
 	public function __construct(){
+		global $config;
+
+		$config += array('menus'=>array());
 
 		parent::__construct();
 
@@ -281,12 +284,9 @@ class MultiLang_Admin extends MultiLang_Common{
 
 
 		//all other menus
-		if( isset($config['menus']) ){
-			foreach($config['menus'] as $id => $menu_label){
-
-				$array = gpOutput::GetMenuArray($id);
-				$this->ShowMenu($array, $id, $menu_label);
-			}
+		foreach($config['menus'] as $id => $menu_label){
+			$array = gpOutput::GetMenuArray($id);
+			$this->ShowMenu($array, $id, $menu_label);
 		}
 	}
 
@@ -391,11 +391,9 @@ class MultiLang_Admin extends MultiLang_Common{
 		$menu_labels			= array();
 		$menu_labels['gp_menu'] = 'Main Menu';
 
-		if( isset($config['menus']) ){
-			foreach($config['menus'] as $menu => $label){
-				$menu_info[$menu] = gpOutput::GetMenuArray($menu);
-				$menu_labels[$menu] = $label;
-			}
+		foreach($config['menus'] as $menu => $label){
+			$menu_info[$menu] = gpOutput::GetMenuArray($menu);
+			$menu_labels[$menu] = $label;
 		}
 
 		echo '<h2>Pages Without Translations</h2>';
@@ -723,12 +721,10 @@ class MultiLang_Admin extends MultiLang_Common{
 			return true;
 		}
 
-		if( isset($config['menus']) ){
-			foreach($config['menus'] as $id => $menu_label){
-				$array = gpOutput::GetMenuArray($id);
-				if( isset($array[$page_index]) ){
-					return true;
-				}
+		foreach($config['menus'] as $id => $menu_label){
+			$array = gpOutput::GetMenuArray($id);
+			if( isset($array[$page_index]) ){
+				return true;
 			}
 		}
 
@@ -802,6 +798,7 @@ class MultiLang_Admin extends MultiLang_Common{
 
 		echo '<h2>'.$langmessage['Pages'].'</h2>';
 
+		$lang_lists = array();
 		foreach($this->lists as $list_index => $list){
 			foreach($list as $lang => $index){
 				$lang_lists[$lang][] = $index;
