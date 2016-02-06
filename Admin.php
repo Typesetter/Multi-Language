@@ -452,29 +452,15 @@ class MultiLang_Admin extends MultiLang_Common{
 
 
 	/**
-	 * Display drop down menu for selecting a language
+	 * Combobox for language / title selection
 	 *
 	 */
-	public function LanguageSelect($name, $default = '' ){
+	public function Select($name, $data_source, $default = ''){
 
 		echo '<div>';
-		echo '<span class="gpinput combobox" data-source="#lang_data">';
+		echo '<span class="gpinput combobox" data-source="'.$data_source.'">';
 		echo '<input type="text" name="'.$name.'" value="'.htmlspecialchars($default).'" class="combobox"/>';
 		echo '</span>';
-		echo '</div>';
-	}
-
-	/**
-	 * Title selection input
-	 *
-	 */
-	public function TitleSelect($default){
-
-		echo '<div>';
-		echo '<span class="gpinput combobox" data-source="#lang_titles">';
-		echo '<input type="text" name="to_slug" value="'.htmlspecialchars($default).'" class="combobox" />';
-		echo '</span>';
-
 		echo '</div>';
 	}
 
@@ -652,7 +638,7 @@ class MultiLang_Admin extends MultiLang_Common{
 			if( $in_menu ){
 				echo $this->language;
 			}else{
-				$this->LanguageSelect('from_lang');
+				$this->Select('from_lang', '#lang_data');
 			}
 
 			echo '</td><td>';
@@ -686,9 +672,9 @@ class MultiLang_Admin extends MultiLang_Common{
 
 		//option to add another title
 		echo '<tr><td>';
-		$this->LanguageSelect('to_lang',$args['to_lang'], $this->lang);
+		$this->Select('to_lang', '#lang_data', $args['to_lang']);
 		echo '</td><td>';
-		$this->TitleSelect($args['to_slug'],$list);
+		$this->Select('to_slug', '#lang_titles', $args['to_slug']);
 		echo '</td><td>';
 		echo '<input type="submit" value="'.$langmessage['save'].'" class="gpabox gpbutton" /> ';
 		echo '</td></tr>';
