@@ -60,7 +60,7 @@ class MultiLang_Admin extends MultiLang_Common{
 	 *
 	 */
 	public function PrimaryLanguage(){
-		global $ml_languages, $langmessage;
+		global $langmessage;
 
 		echo '<div>';
 		echo '<form method="post" action="'.common::GetUrl('Admin_MultiLang').'">';
@@ -68,7 +68,7 @@ class MultiLang_Admin extends MultiLang_Common{
 		echo '<h3>Select Primary Language</h3>';
 
 		echo '<select class="gpselect" name="primary">';
-		foreach($ml_languages as $lang => $language){
+		foreach($this->avail_langs as $lang => $language){
 			if( $lang == $this->lang ){
 				echo '<option value="'.$lang.'" selected>'.htmlspecialchars($language).'</option>';
 			}else{
@@ -87,11 +87,11 @@ class MultiLang_Admin extends MultiLang_Common{
 	}
 
 	public function PrimaryLanguageSave(){
-		global $ml_languages, $langmessage;
+		global $langmessage;
 
 		$primary = $_REQUEST['primary'];
 
-		if( !isset($ml_languages[$primary]) ){
+		if( !isset($this->avail_langs[$primary]) ){
 			message($langmessage['OOPS'].' (Invalid Language)');
 			return;
 		}
@@ -102,7 +102,7 @@ class MultiLang_Admin extends MultiLang_Common{
 		if( $this->SaveConfig() ){
 			message($langmessage['SAVED']);
 			$this->lang				= $primary;
-			$this->language			= $ml_languages[$this->lang];
+			$this->language			= $this->avail_langs[$this->lang];
 		}else{
 			message($langmessage['OOPS']);
 		}
@@ -113,15 +113,15 @@ class MultiLang_Admin extends MultiLang_Common{
 	 *
 	 */
 	public function SaveLanguages(){
-		global $ml_languages, $langmessage;
+		global $langmessage;
 
 		$langs = array();
 		foreach($_POST['langs'] as $code => $on){
-			if( !isset($ml_languages[$code]) ){
+			if( !isset($this->avail_langs[$code]) ){
 				message($langmessage['OOPS'].' (Invalid Language)');
 				return false;
 			}
-			$langs[$code] = $ml_languages[$code];
+			$langs[$code] = $this->avail_langs[$code];
 		}
 
 		if( !count($langs) ){
@@ -139,7 +139,7 @@ class MultiLang_Admin extends MultiLang_Common{
 	}
 
 	public function SelectLanguages(){
-		global $ml_languages, $langmessage;
+		global $langmessage;
 
 		echo '<h2>Languages</h2>';
 
@@ -148,7 +148,7 @@ class MultiLang_Admin extends MultiLang_Common{
 		echo '<table class="bordered checkbox_table">';
 		echo '<tr><th>&nbsp;</th><th>Code</th><th>Language</th></tr>';
 		$i = 1;
-		foreach($ml_languages as $code => $label){
+		foreach($this->avail_langs as $code => $label){
 			$class = ($i % 2 ? '' : 'even');
 			$attr = '';
 			if( isset($this->config['langs'][$code]) ){ // so that if $this->langs isn't set, all of the entries won't be checked
@@ -179,7 +179,7 @@ class MultiLang_Admin extends MultiLang_Common{
 	 *
 	 */
 	public function ShowStats(){
-		global $ml_languages, $gp_index;
+		global $gp_index;
 
 		//get some data
 		$per_lang = array();
@@ -239,7 +239,6 @@ class MultiLang_Admin extends MultiLang_Common{
 	 *
 	 */
 	public function PageCount($per_lang){
-		global $ml_languages;
 
 		if( empty($per_lang) ){
 			return;
@@ -255,9 +254,9 @@ class MultiLang_Admin extends MultiLang_Common{
 			echo '<tr><td>';
 
 			if( $lang == $this->lang ){
-				echo '<b>'.$ml_languages[$lang].'</b><br/>'.common::Link('Admin_MultiLang','Primary Language','cmd=PrimaryLanguage','name="gpabox"').'</i>';
+				echo '<b>'.$this->avail_langs[$lang].'</b><br/>'.common::Link('Admin_MultiLang','Primary Language','cmd=PrimaryLanguage','name="gpabox"').'</i>';
 			}else{
-				echo ''.$ml_languages[$lang];
+				echo ''.$this->avail_langs[$lang];
 			}
 
 			echo '</td><td>'.number_format($count).'</td></tr>';
@@ -268,10 +267,9 @@ class MultiLang_Admin extends MultiLang_Common{
 
 	/*
 	public function PageLists($list_sizes){
-		global $ml_languages;
 
 		echo '<h3>Page Lists</h3>';
-		$lang_label = $ml_languages[$this->lang];
+		$lang_label = $this->avail_langs[$this->lang];
 		asort($list_sizes);
 		echo '<table class="bordered full_width"><tr><th>Page in Primary Language</th><th>Number of Associated Pages</th><th>&nbsp;</th></tr>';
 		foreach($list_sizes as $list_index => $size){
@@ -282,7 +280,7 @@ class MultiLang_Admin extends MultiLang_Common{
 			}else{
 				$page_index = current($list);
 				$page_lang = key($list);
-				echo '('.$ml_languages[$page_lang].') ';
+				echo '('.$this->avail_langs[$page_lang].') ';
 			}
 			$title = common::IndexToTitle($page_index);
 			echo common::Link_Page($title);
@@ -324,8 +322,6 @@ class MultiLang_Admin extends MultiLang_Common{
 	 *
 	 */
 	public function ShowMenu($menu, $id, $menu_label){
-		global $ml_languages;
-
 
 		echo '<h3>';
 		echo common::Link('Admin_Menu',$menu_label,'menu='.$id,array('data-arg'=>'cnreq'));
@@ -339,7 +335,7 @@ class MultiLang_Admin extends MultiLang_Common{
 
 		echo '<tr><th width="1">'.$this->language.' (Primary Language) </th>';
 		foreach($langs as $lang){
-			echo '<th width="1">'.$ml_languages[$lang].'</th>';
+			echo '<th width="1">'.$this->avail_langs[$lang].'</th>';
 		}
 		echo '<th width="1">&nbsp;</th></tr>';
 
@@ -622,10 +618,9 @@ class MultiLang_Admin extends MultiLang_Common{
 	 *
 	 */
 	public function PostedLanguage($lang){
-		global $ml_languages;
 
-		if( in_array($lang,$ml_languages) ){
-			return array_search($lang,$ml_languages);
+		if( in_array($lang,$this->avail_langs) ){
+			return array_search($lang,$this->avail_langs);
 		}
 	}
 
@@ -651,7 +646,7 @@ class MultiLang_Admin extends MultiLang_Common{
 	 *
 	 */
 	public function TitleSettings( $args = array() ){
-		global $gp_titles, $langmessage, $langmessage, $ml_languages, $gp_index;
+		global $gp_titles, $langmessage, $langmessage, $gp_index;
 
 		$args += array('to_lang'=>'','to_slug'=>'');
 
@@ -694,7 +689,7 @@ class MultiLang_Admin extends MultiLang_Common{
 
 
 		//current settings
-		foreach($ml_languages as $lang => $language){
+		foreach($this->avail_langs as $lang => $language){
 			if( !isset($list[$lang]) ){
 				continue;
 			}
@@ -766,11 +761,12 @@ class MultiLang_Admin extends MultiLang_Common{
 			return true;
 		}
 
-
-		foreach($config['menus'] as $id => $menu_label){
-			$array = gpOutput::GetMenuArray($id);
-			if( isset($array[$page_index]) ){
-				return true;
+		if( isset($config['menus']) ){
+			foreach($config['menus'] as $id => $menu_label){
+				$array = gpOutput::GetMenuArray($id);
+				if( isset($array[$page_index]) ){
+					return true;
+				}
 			}
 		}
 

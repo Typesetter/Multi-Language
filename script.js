@@ -50,6 +50,7 @@ $(function(){
 				source:		source,
 				delay:		100,
 				minLength:	1,
+				appendTo: '#gp_admin_boxc',
 
 				select: function(event,ui){
 					if( ui.item ){

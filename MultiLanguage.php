@@ -110,7 +110,7 @@ class MultiLang extends MultiLang_Common{
 	}
 
 	public function Gadget(){
-		global $page, $ml_languages;
+		global $page;
 
 		$this->AddResources();
 
@@ -132,7 +132,7 @@ class MultiLang extends MultiLang_Common{
 		echo '<div class="multi_lang_select"><div>';
 		echo '<b>Languages</b>';
 		$links = array();
-		foreach($ml_languages as $lang_code => $lang_label){
+		foreach($this->avail_langs as $lang_code => $lang_label){
 
 			if( !isset($list[$lang_code]) ){
 				continue;

@@ -3,19 +3,20 @@ defined('is_running') or die('Not an entry point...');
 
 gpPlugin::Incl('Languages.php');
 
-class MultiLang_Common{
+class MultiLang_Common extends MultiLang_Langs{
 
-	public $config_file;
-	public $config;
-	public $lists	= array();
-	public $titles = array();
-	public $langs	= array();
+	protected $config_file;
+	protected $config;
+	protected $lists	= array();
+	protected $titles	= array();
+	protected $langs	= array();
 
-	public $lang;
-	public $language;
+	protected $lang;
+	protected $language;
 
 	public function __construct(){
-		global $addonPathData, $config, $ml_languages;
+		global $addonPathData, $config;
+
 
 		$this->config_file	= $addonPathData.'/config.php';
 		$this->lang			= $config['language'];
@@ -24,7 +25,6 @@ class MultiLang_Common{
 	}
 
 	public function GetData(){
-		global $ml_languages;
 
 		$config = array();
 		if( file_exists($this->config_file) ){
@@ -43,13 +43,13 @@ class MultiLang_Common{
 		if( isset($this->config['primary']) ){
 			$this->lang = $this->config['primary'];
 		}
-		$this->language		= $ml_languages[$this->lang];
+		$this->language		= $this->avail_langs[$this->lang];
 
 
 
 
 		if( !count($this->config['langs']) ){
-			$this->langs = $ml_languages;
+			$this->langs = $this->avail_langs;
 		}else{
 			$this->langs =$this->config['langs'];
 		}
