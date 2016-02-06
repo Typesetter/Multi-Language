@@ -290,10 +290,12 @@ class MultiLang_Admin extends MultiLang_Common{
 
 
 		//all other menus
-		foreach($config['menus'] as $id => $menu_label){
+		if( isset($config['menus']) ){
+			foreach($config['menus'] as $id => $menu_label){
 
-			$array = gpOutput::GetMenuArray($id);
-			$this->ShowMenu($array, $id, $menu_label);
+				$array = gpOutput::GetMenuArray($id);
+				$this->ShowMenu($array, $id, $menu_label);
+			}
 		}
 	}
 
