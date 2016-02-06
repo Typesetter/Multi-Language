@@ -155,7 +155,7 @@ class MultiLang extends MultiLang_Common{
 
 		if( common::loggedIn() ){
 			echo '<p>Admin: ';
-			echo common::Link('Admin_MultiLang','Add Translation','cmd=title_settings&index='.$page->gp_index,' name="gpabox"');
+			echo common::Link('Admin_MultiLang','Add Translation','cmd=TitleSettings&index='.$page->gp_index,' name="gpabox"');
 			echo '</p>';
 		}
 

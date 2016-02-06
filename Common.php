@@ -70,7 +70,7 @@ class MultiLang_Common extends MultiLang_Langs{
 
 
 		if( $page->pagetype == 'display' ){
-			$page->admin_links[] = common::Link('Admin_MultiLang','Multi Language','cmd=title_settings&index='.$page->gp_index,' name="gpabox"');
+			$page->admin_links[] = common::Link('Admin_MultiLang','Multi Language','cmd=TitleSettings&index='.$page->gp_index,' name="gpabox"');
 		}
 		$page->head_js[] = $addonRelativeCode.'/script.js'; //needed for admin pages as well
 		$page->css_admin[] = $addonRelativeCode.'/admin.css';

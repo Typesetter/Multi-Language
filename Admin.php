@@ -5,48 +5,55 @@ gpPlugin::Incl('Common.php');
 
 class MultiLang_Admin extends MultiLang_Common{
 
+	protected $cmds				= array();		//executable commands
+
 	public function __construct(){
 
 		parent::__construct();
 
 		$this->AddResources();
 
+		$this->cmds['TitleSettingsSave']	= '';
+		$this->cmds['TitleSettings']		= '';
+		$this->cmds['RemoveTitle']			= 'TitleSettings';
+		$this->cmds['NotTranslated']		= '';
+		$this->cmds['SaveLanguages']		= 'SelectLanguages';
+		$this->cmds['SelectLanguages']		= '';
+		$this->cmds['PrimaryLanguage']		= '';
+		$this->cmds['PrimaryLanguageSave']	= 'DefaultDisplay';
 
 		$cmd = common::GetCommand();
-		switch($cmd){
-			case 'title_settings_add':
-				$this->TitleSettingsSave();
+		$this->RunCommands($cmd);
+	}
+
+
+
+	/**
+	 * Run Commands
+	 * See \gp\Base::RunCommands() (available in TS 5.0)
+	 *
+	 */
+	protected function RunCommands($cmd){
+
+		$this->cmds	= array_change_key_case($this->cmds, CASE_LOWER);
+		$cmd		= strtolower($cmd);
+
+		if( !isset($this->cmds[$cmd]) ){
+			$this->DefaultDisplay();
 			return;
-			case 'title_settings':
-				$this->TitleSettings();
-			return;
-			case 'rmtitle':
-				$this->RemoveTitle();
-				$this->TitleSettings();
-			return;
-
-			case 'not_translated':
-				$this->NotTranslated();
-			break;
-
-			case 'save_languages':
-				$this->SaveLanguages();
-			case 'languages':
-				$this->SelectLanguages();
-			break;
-
-			case 'PrimaryLanguage':
-				$this->PrimaryLanguage();
-			break;
-			case 'PrimaryLanguageSave':
-				$this->PrimaryLanguageSave();
-				$this->DefaultDisplay();
-			break;
-
-			default:
-				$this->DefaultDisplay();
-			break;
 		}
+
+		$cmds = (array)$this->cmds[$cmd];
+		array_unshift($cmds, $cmd);
+
+		foreach($cmds as $cmd){
+			if( method_exists($this,$cmd) ){
+				$this->$cmd();
+			}elseif( is_callable($cmd) ){
+				call_user_func($cmd, $this);
+			}
+		}
+
 	}
 
 	public function DefaultDisplay(){
@@ -144,7 +151,7 @@ class MultiLang_Admin extends MultiLang_Common{
 		echo '<h2>Languages</h2>';
 
 		echo '<form method="post" action="'.common::GetUrl('Admin_MultiLang').'">';
-		echo '<input type="hidden" name="cmd" value="save_languages" /> ';
+		echo '<input type="hidden" name="cmd" value="SaveLanguages" /> ';
 		echo '<table class="bordered checkbox_table">';
 		echo '<tr><th>&nbsp;</th><th>Code</th><th>Language</th></tr>';
 		$i = 1;
@@ -207,7 +214,7 @@ class MultiLang_Admin extends MultiLang_Common{
 		echo '<tr><td>Pages with Translations</td><td>'.number_format(count($this->titles)).'</td></tr>';
 
 		//count titles with translations
-		echo '<tr><td>'.common::Link('Admin_MultiLang','Pages without Translations','cmd=not_translated').'</td><td>'.number_format(count($gp_index) - count($this->titles)).'</td></tr>';
+		echo '<tr><td>'.common::Link('Admin_MultiLang','Pages without Translations','cmd=NotTranslated').'</td><td>'.number_format(count($gp_index) - count($this->titles)).'</td></tr>';
 
 
 
@@ -287,7 +294,7 @@ class MultiLang_Admin extends MultiLang_Common{
 			echo '</td><td>';
 			echo $size;
 			echo '</td><td>';
-			echo common::Link('Admin_MultiLang','Options','cmd=title_settings&index='.$page_index,' name="gpabox"');
+			echo common::Link('Admin_MultiLang','Options','cmd=TitleSettings&index='.$page_index,' name="gpabox"');
 			echo '</td></tr>';
 		}
 		echo '</table>';
@@ -369,7 +376,7 @@ class MultiLang_Admin extends MultiLang_Common{
 
 
 			echo '<td>';
-			echo common::Link('Admin_MultiLang','Options','cmd=title_settings&index='.$page_index,' name="gpabox"');
+			echo common::Link('Admin_MultiLang','Options','cmd=TitleSettings&index='.$page_index,' name="gpabox"');
 			echo '</td></tr>';
 			$i++;
 		}
@@ -444,7 +451,7 @@ class MultiLang_Admin extends MultiLang_Common{
 			echo implode(', ',$which_menus);
 
 			echo '</td><td>';
-			echo common::Link('Admin_MultiLang','Options','cmd=title_settings&index='.$page_index,' name="gpabox"');
+			echo common::Link('Admin_MultiLang','Options','cmd=TitleSettings&index='.$page_index,' name="gpabox"');
 			echo '</td></tr>';
 		}
 		echo '</tbody>';
@@ -570,7 +577,7 @@ class MultiLang_Admin extends MultiLang_Common{
 			$list		= $this->GetList($to_index);
 			if( count($list) > 1 ){
 				$label = common::GetLabelIndex($to_index);
-				$link = common::Link('Admin_MultiLang',$label,'cmd=title_settings&index='.$to_index,' name="gpabox"');
+				$link = common::Link('Admin_MultiLang',$label,'cmd=TitleSettings&index='.$to_index,' name="gpabox"');
 				message('Sorry, '.$link.' is already part of a translation.');
 				return false;
 			}
@@ -657,7 +664,7 @@ class MultiLang_Admin extends MultiLang_Common{
 
 		echo '<div>';
 		echo '<form method="post" action="'.common::GetUrl('Admin_MultiLang').'">';
-		echo '<input type="hidden" name="cmd" value="title_settings_add" />';
+		echo '<input type="hidden" name="cmd" value="TitleSettingsSave" />';
 		echo '<input type="hidden" name="index" value="'.$page_index.'" />';
 
 
@@ -700,7 +707,7 @@ class MultiLang_Admin extends MultiLang_Common{
 			$title = common::IndexToTitle($index);
 			echo common::Link_Page($title);
 			echo '</td><td>';
-			echo common::Link('Admin_MultiLang','Remove','cmd=rmtitle&index='.$page_index.'&rmindex='.$index,'name="gpabox" class="gpconfirm" title="Remove this entry?"');
+			echo common::Link('Admin_MultiLang','Remove','cmd=RemoveTitle&index='.$page_index.'&rmindex='.$index,'name="gpabox" class="gpconfirm" title="Remove this entry?"');
 			echo '</td></tr>';
 
 		}
@@ -822,7 +829,7 @@ class MultiLang_Admin extends MultiLang_Common{
 		echo '<p class="sm">';
 		echo common::Link('Admin_MultiLang','Administration');
 		echo ' - ';
-		echo common::Link('Admin_MultiLang','Languages','cmd=languages');
+		echo common::Link('Admin_MultiLang','Languages','cmd=SelectLanguages');
 		echo '</p>';
 
 	}
