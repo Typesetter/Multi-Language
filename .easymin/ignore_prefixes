@@ -1,0 +1,13 @@
+x_
+X_
+--
+data/_
+data/index.html
+.git
+xx_
+XX_
+.easymin
+Boxfile
+.phpunit
+phpunit.xml
+.travis.yml
