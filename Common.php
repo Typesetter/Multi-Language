@@ -5,16 +5,16 @@ gpPlugin::Incl('Languages.php');
 
 class MultiLang_Common{
 
-	var $config_file;
-	var $config;
-	var $lists	= array();
-	var $titles = array();
-	var $langs	= array();
+	public $config_file;
+	public $config;
+	public $lists	= array();
+	public $titles = array();
+	public $langs	= array();
 
-	var $lang;
-	var $language;
+	public $lang;
+	public $language;
 
-	function Init(){
+	public function __construct(){
 		global $addonPathData, $config, $ml_languages;
 
 		$this->config_file	= $addonPathData.'/config.php';
@@ -23,7 +23,7 @@ class MultiLang_Common{
 		$this->GetData();
 	}
 
-	function GetData(){
+	public function GetData(){
 		global $ml_languages;
 
 		$config = array();
@@ -60,7 +60,7 @@ class MultiLang_Common{
 	 * Add multi language elements to the $page
 	 *
 	 */
-	function AddResources(){
+	public function AddResources(){
 		global $page, $addonRelativeCode;
 		static $added = false;
 
@@ -83,7 +83,7 @@ class MultiLang_Common{
 	 * Remove entries from titles if they aren't in lists
 	 *
 	 */
-	function FixConfig(){
+	public function FixConfig(){
 		if( !isset($this->config['titles']) || !is_array($this->config['titles']) ){
 			return;
 		}
@@ -106,7 +106,7 @@ class MultiLang_Common{
 	 * Get the list for a title
 	 *
 	 */
-	function GetList($page_index){
+	public function GetList($page_index){
 
 		$list_index = $this->GetListIndex($page_index);
 		if( $list_index === false ){
@@ -120,7 +120,7 @@ class MultiLang_Common{
 	 * Get the list index for a title
 	 *
 	 */
-	function GetListIndex($page_index){
+	public function GetListIndex($page_index){
 		if( isset($this->titles[$page_index]) ){
 			return $this->titles[$page_index];
 		}
@@ -132,7 +132,7 @@ class MultiLang_Common{
 	 * Create a new list index
 	 *
 	 */
-	function NewListIndex(){
+	public function NewListIndex(){
 
 		$num_index = 0;
 		if( is_array($this->lists) ){

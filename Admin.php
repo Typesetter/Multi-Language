@@ -6,11 +6,10 @@ gpPlugin::Incl('Common.php');
 class MultiLang_Admin extends MultiLang_Common{
 
 	public function __construct(){
-		global $page;
+
+		parent::__construct();
 
 		$this->AddResources();
-
-		$this->Init();
 
 
 		$cmd = common::GetCommand();

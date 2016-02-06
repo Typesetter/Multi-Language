@@ -5,12 +5,12 @@ gpPlugin::Incl('Common.php');
 
 class MultiLang extends MultiLang_Common{
 
-	function __construct(){
-		$this->Init();
+	public function __construct(){
+		parent::__construct();
 	}
 
 
-	static function GetObject(){
+	public static function GetObject(){
 		static $object;
 
 		if( !$object ){
@@ -27,12 +27,12 @@ class MultiLang extends MultiLang_Common{
 	 * 	... redirect all empty paths?
 	 *
 	 */
-	function _WhichPage($path){
+	public function _WhichPage($path){
 		$object = self::GetObject();
 		return $object->WhichPage($path);
 	}
 
-	function WhichPage($path){
+	public function WhichPage($path){
 		global $config;
 
 		$home_title					= $config['homepath'];
@@ -73,7 +73,7 @@ class MultiLang extends MultiLang_Common{
 		common::Redirect(common::GetUrl($home_title));
 	}
 
-	function RequestLangs(){
+	public function RequestLangs(){
 		$langs = array();
 		$temp = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
 		$temp = 'fr;q=0.8,en-us;q=0.5,en;q=0.3';
@@ -104,12 +104,12 @@ class MultiLang extends MultiLang_Common{
 	 * Show related titles
 	 *
 	 */
-	static function _Gadget(){
+	public static function _Gadget(){
 		$object = self::GetObject();
 		$object->Gadget();
 	}
 
-	function Gadget(){
+	public function Gadget(){
 		global $page, $ml_languages;
 
 		$this->AddResources();
@@ -168,12 +168,12 @@ class MultiLang extends MultiLang_Common{
 	 * Translate a menu array using the translation lists
 	 *
 	 */
-	static function _GetMenuArray($menu){
+	public static function _GetMenuArray($menu){
 		$object = self::GetObject();
 		return $object->GetMenuArray($menu);
 	}
 
-	function GetMenuArray($menu){
+	public function GetMenuArray($menu){
 		global $page;
 
 
