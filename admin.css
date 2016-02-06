@@ -4,6 +4,7 @@
 	min-width:350px;
 	display:inline-block;
 	vertical-align:top;
+	margin-bottom:1em;
 }
 .ml_stats > div{
 	margin:0 20px 20px 0;

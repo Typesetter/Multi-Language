@@ -5,8 +5,10 @@ gpPlugin::Incl('Common.php');
 
 class MultiLang_Admin extends MultiLang_Common{
 
-	function MultiLang_Admin(){
+	public function __construct(){
 		global $page;
+
+		$this->AddResources();
 
 		$this->Init();
 
@@ -48,7 +50,7 @@ class MultiLang_Admin extends MultiLang_Common{
 		}
 	}
 
-	function DefaultDisplay(){
+	public function DefaultDisplay(){
 		$this->ShowStats();
 		$this->AllMenus();
 		$this->SmLinks();
@@ -58,7 +60,7 @@ class MultiLang_Admin extends MultiLang_Common{
 	 * Display for for selecting the primary language
 	 *
 	 */
-	function PrimaryLanguage(){
+	public function PrimaryLanguage(){
 		global $ml_languages, $langmessage;
 
 		echo '<div>';
@@ -85,7 +87,7 @@ class MultiLang_Admin extends MultiLang_Common{
 		echo '</div>';
 	}
 
-	function PrimaryLanguageSave(){
+	public function PrimaryLanguageSave(){
 		global $ml_languages, $langmessage;
 
 		$primary = $_REQUEST['primary'];
@@ -111,7 +113,7 @@ class MultiLang_Admin extends MultiLang_Common{
 	 * Save the list of languages to be used
 	 *
 	 */
-	function SaveLanguages(){
+	public function SaveLanguages(){
 		global $ml_languages, $langmessage;
 
 		$langs = array();
@@ -137,7 +139,7 @@ class MultiLang_Admin extends MultiLang_Common{
 		}
 	}
 
-	function SelectLanguages(){
+	public function SelectLanguages(){
 		global $ml_languages, $langmessage;
 
 		echo '<h2>Languages</h2>';
@@ -173,8 +175,11 @@ class MultiLang_Admin extends MultiLang_Common{
 
 	}
 
-
-	function ShowStats(){
+	/**
+	 * Show language statistics
+	 *
+	 */
+	public function ShowStats(){
 		global $ml_languages, $gp_index;
 
 		//get some data
@@ -223,6 +228,24 @@ class MultiLang_Admin extends MultiLang_Common{
 
 		echo '</table></div></div>';
 
+		$this->PageCount($per_lang);
+
+		//Show lists
+		//$this->PageLists($list_sizes);
+	}
+
+
+	/**
+	 * Show Page Counts per language
+	 *
+	 */
+	public function PageCount($per_lang){
+		global $ml_languages;
+
+		if( empty($per_lang) ){
+			return;
+		}
+
 
 		//Language Statistics
 		echo '<div class="ml_stats"><div>';
@@ -241,14 +264,11 @@ class MultiLang_Admin extends MultiLang_Common{
 			echo '</td><td>'.number_format($count).'</td></tr>';
 		}
 		echo '</table></div></div>';
-
-
-		//Show lists
-		//$this->PageLists($list_sizes);
 	}
 
+
 	/*
-	function PageLists($list_sizes){
+	public function PageLists($list_sizes){
 		global $ml_languages;
 
 		echo '<h3>Page Lists</h3>';
@@ -282,7 +302,7 @@ class MultiLang_Admin extends MultiLang_Common{
 	 * Display all pages and their associated translations
 	 *
 	 */
-	function AllMenus(){
+	public function AllMenus(){
 		global $gp_menu, $config;
 
 		//show main menu
@@ -304,7 +324,7 @@ class MultiLang_Admin extends MultiLang_Common{
 	 * Display a menu and it's translated pages
 	 *
 	 */
-	function ShowMenu($menu, $id, $menu_label){
+	public function ShowMenu($menu, $id, $menu_label){
 		global $ml_languages;
 
 
@@ -368,7 +388,7 @@ class MultiLang_Admin extends MultiLang_Common{
 	 * Return a list of languages being used
 	 *
 	 */
-	function WhichLanguages(){
+	public function WhichLanguages(){
 
 		$langs = array();
 
@@ -388,7 +408,7 @@ class MultiLang_Admin extends MultiLang_Common{
 	 * Show a list of pages that don't have a translation setting
 	 *
 	 */
-	function NotTranslated(){
+	public function NotTranslated(){
 		global $gp_index, $config, $gp_menu, $page;
 
 		$page->head_js[] = '/include/thirdparty/tablesorter/tablesorter.js';
@@ -442,7 +462,7 @@ class MultiLang_Admin extends MultiLang_Common{
 	 * Save the current configuration
 	 * If successful, reset the lists and titles variables
 	 */
-	function SaveConfig(){
+	public function SaveConfig(){
 
 		if( !gpFiles::SaveArray($this->config_file,'config',$this->config) ){
 			return false;
@@ -462,7 +482,7 @@ class MultiLang_Admin extends MultiLang_Common{
 	 * Display drop down menu for selecting a language
 	 *
 	 */
-	function LanguageSelect($name, $default = '', $exclude= array() ){
+	public function LanguageSelect($name, $default = '', $exclude= array() ){
 
 		echo '<div>';
 		echo '<span class="gpinput combobox" data-source="#lang_data">';
@@ -475,7 +495,7 @@ class MultiLang_Admin extends MultiLang_Common{
 	 * Title selection input
 	 *
 	 */
-	function TitleSelect($default,$exclude=array()){
+	public function TitleSelect($default,$exclude=array()){
 		global $gp_index,$gp_titles, $langmessage;
 
 		$exclude = (array)$exclude;
@@ -493,7 +513,7 @@ class MultiLang_Admin extends MultiLang_Common{
 	 * Save new translations
 	 *
 	 */
-	function TitleSettingsSave($cmd){
+	public function TitleSettingsSave($cmd){
 
 		$saved = $this->_TitleSettingsSave($cmd);
 
@@ -504,7 +524,7 @@ class MultiLang_Admin extends MultiLang_Common{
 		}
 	}
 
-	function _TitleSettingsSave($cmd){
+	public function _TitleSettingsSave($cmd){
 		global $gp_titles, $langmessage, $gp_index;
 
 
@@ -602,7 +622,7 @@ class MultiLang_Admin extends MultiLang_Common{
 	 * Get the language key from the language name
 	 *
 	 */
-	function PostedLanguage($lang){
+	public function PostedLanguage($lang){
 		global $ml_languages;
 
 		if( in_array($lang,$ml_languages) ){
@@ -614,7 +634,7 @@ class MultiLang_Admin extends MultiLang_Common{
 	 * Get the title index from the posted title
 	 *
 	 */
-	function PostedTitle($posted_slug){
+	public function PostedTitle($posted_slug){
 		global $gp_index;
 
 		foreach($gp_index as $slug => $index){
@@ -631,7 +651,7 @@ class MultiLang_Admin extends MultiLang_Common{
 	 * Language selection popup
 	 *
 	 */
-	function TitleSettings( $args = array() ){
+	public function TitleSettings( $args = array() ){
 		global $gp_titles, $langmessage, $langmessage, $ml_languages, $gp_index;
 
 		$args += array('to_lang'=>'','to_slug'=>'');
@@ -738,7 +758,7 @@ class MultiLang_Admin extends MultiLang_Common{
 	 * Determine if the page is in a menu
 	 *
 	 */
-	function InMenu($page_index){
+	public function InMenu($page_index){
 		global $gp_menu, $config;
 
 
@@ -762,7 +782,7 @@ class MultiLang_Admin extends MultiLang_Common{
 	 * Remove a title from a translation list
 	 *
 	 */
-	function RemoveTitle(){
+	public function RemoveTitle(){
 		global $gp_titles, $langmessage;
 
 		$page_index = $_REQUEST['rmindex'];
@@ -806,7 +826,7 @@ class MultiLang_Admin extends MultiLang_Common{
 		}
 	}
 
-	function SmLinks(){
+	public function SmLinks(){
 		echo '<p class="sm">';
 		echo common::Link('Admin_MultiLang','Administration');
 		echo ' - ';

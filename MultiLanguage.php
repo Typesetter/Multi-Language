@@ -108,6 +108,7 @@ class MultiLang extends MultiLang_Common{
 		$object = self::GetObject();
 		$object->Gadget();
 	}
+
 	function Gadget(){
 		global $page, $ml_languages;
 
@@ -159,29 +160,6 @@ class MultiLang extends MultiLang_Common{
 		}
 
 		echo '</div></div>';
-	}
-
-
-	/**
-	 * Add multi language elements to the $page
-	 *
-	 */
-	function AddResources(){
-		global $page, $addonRelativeCode;
-		static $added = false;
-
-		if( $added ){
-			return;
-		}
-
-
-		if( $page->pagetype == 'display' ){
-			$page->admin_links[] = common::Link('Admin_MultiLang','Multi Language','cmd=title_settings&index='.$page->gp_index,' name="gpabox"');
-		}
-		$page->head_js[] = $addonRelativeCode.'/script.js'; //needed for admin pages as well
-		$page->css_admin[] = $addonRelativeCode.'/admin.css';
-
-		$added = true;
 	}
 
 
