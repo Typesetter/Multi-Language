@@ -15,7 +15,7 @@ class MultiLang_Admin extends MultiLang_Common{
 		$cmd = common::GetCommand();
 		switch($cmd){
 			case 'title_settings_add':
-				$this->TitleSettingsSave($cmd);
+				$this->TitleSettingsSave();
 			return;
 			case 'title_settings':
 				$this->TitleSettings();
@@ -477,7 +477,7 @@ class MultiLang_Admin extends MultiLang_Common{
 	 * Display drop down menu for selecting a language
 	 *
 	 */
-	public function LanguageSelect($name, $default = '', $exclude= array() ){
+	public function LanguageSelect($name, $default = '' ){
 
 		echo '<div>';
 		echo '<span class="gpinput combobox" data-source="#lang_data">';
@@ -490,10 +490,7 @@ class MultiLang_Admin extends MultiLang_Common{
 	 * Title selection input
 	 *
 	 */
-	public function TitleSelect($default,$exclude=array()){
-		global $gp_index,$gp_titles, $langmessage;
-
-		$exclude = (array)$exclude;
+	public function TitleSelect($default){
 
 		echo '<div>';
 		echo '<span class="gpinput combobox" data-source="#lang_titles">';
@@ -508,9 +505,9 @@ class MultiLang_Admin extends MultiLang_Common{
 	 * Save new translations
 	 *
 	 */
-	public function TitleSettingsSave($cmd){
+	public function TitleSettingsSave(){
 
-		$saved = $this->_TitleSettingsSave($cmd);
+		$saved = $this->_TitleSettingsSave();
 
 		if( $saved ){
 			$this->TitleSettings();
@@ -519,8 +516,8 @@ class MultiLang_Admin extends MultiLang_Common{
 		}
 	}
 
-	public function _TitleSettingsSave($cmd){
-		global $gp_titles, $langmessage, $gp_index;
+	public function _TitleSettingsSave(){
+		global $gp_titles, $langmessage;
 
 
 		//check from index
