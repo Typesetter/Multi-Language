@@ -36,42 +36,54 @@ class MultiLang extends MultiLang_Common{
 		global $config;
 
 		$home_title					= $config['homepath'];
+		$home_key					= $config['homepath_key'];
 		$config['homepath_key']		= false;
 		$config['homepath']			= false;
 
+
 		//only if homepage
-		if( !empty($path) ){
+		if( !empty($path) && $path !== $home_title ){
 			return $path;
 		}
 
 
-		//only if the homepage is translated
-		$list = $this->GetList($config['homepath_key']);
-		if( !$list ){
-			common::Redirect(common::GetUrl($home_title));
-			//dies
+		$translated_key = $this->WhichTranslation($home_key);
+		if( !is_null($translated_key) ){
+			$home_title = common::IndexToTitle($translated_key);
 		}
 
+		//redirect if needed
+		if( $home_title != $path ){
+			common::Redirect(common::GetUrl($home_title));
+		}
+	}
+
+	/**
+	 * Return the translated page index according to the users ACCEPT_LANGUAGE
+	 *
+	 */
+	public function WhichTranslation($key){
+
+		//only if translated
+		$list = $this->GetList($key);
+		if( !$list ){
+			return;
+		}
 
 		//only if user has language settings
 		if( empty($_SERVER['HTTP_ACCEPT_LANGUAGE']) ){
-			common::Redirect(common::GetUrl($home_title));
-			//dies
+			return;
 		}
-
 
 		//check for appropriate translation
 		$langs = $this->RequestLangs();
 		foreach($langs as $lang => $importance){
 			if( isset($list[$lang]) ){
-				$title = common::IndexToTitle($list[$lang]);
-				common::Redirect(common::GetUrl($title));
-				//dies
+				return $list[$lang];
 			}
 		}
-
-		common::Redirect(common::GetUrl($home_title));
 	}
+
 
 	public function RequestLangs(){
 		$langs = array();
