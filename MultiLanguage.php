@@ -228,6 +228,32 @@ class MultiLang extends MultiLang_Common{
 		return $new_menu;
 	}
 
+
+	/**
+	 * Set $page->lang and $page->language
+	 *
+	 * if page is translated, use language of translation
+	 * otherwise use existing $page->lang (since Typesrtter ver 5.1.1-b1) 
+	 * or global config language (up to Typesetter 5.1)
+	 *
+	 */
+	public static function _PageRunScript($cmd){
+		$object = self::GetObject();
+		return $object->PageRunScript($cmd);
+	}
+
+	public function PageRunScript($cmd){
+		global $page, $config;
+
+		$lang = isset($page->lang) ? $page->lang : $config['language'];
+		$list = $this->GetList($page->gp_index);
+		$page_lang = is_array($list) && ($page_lang = array_search($page->gp_index, $list)) !== false ? $page_lang : $lang;
+		$page->lang = $page_lang;
+		$page->language = $this->avail_langs[$page_lang];
+
+		return $cmd;
+	}
+
 }
 
 //for backwards compat
