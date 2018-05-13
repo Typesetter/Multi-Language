@@ -111,7 +111,7 @@ class MultiLang extends MultiLang_Common{
 
 
 	/**
-	 * Gadget Function
+	 * Gadget Unordered List
 	 * Show related titles
 	 *
 	 */
@@ -166,11 +166,152 @@ class MultiLang extends MultiLang_Common{
 
 		if( common::loggedIn() ){
 			echo '<p>Admin: ';
-			echo common::Link('Admin_MultiLang','Add Translation','cmd=TitleSettings&index='.$page->gp_index,' name="gpabox"');
+			echo common::Link('Admin_MultiLang','Manage Translations','cmd=TitleSettings&index='.$page->gp_index,' name="gpabox"');
 			echo '</p>';
 		}
 
 		echo '</div></div>';
+	}
+
+
+
+	/**
+	 * Gadget Bootstrap Dropdown Nav
+	 *
+	 */
+	public static function _Gadget_BS_Dropdown_Nav(){
+		$object = self::GetObject();
+		$object->Gadget_BS_Dropdown_Nav();
+	}
+
+	public function Gadget_BS_Dropdown_Nav(){
+		global $page;
+
+		$this->AddResources();
+		common::LoadComponents('fontawesome');
+
+		//admin and special pages cannot be translated
+		if( $page->pagetype != 'display' ){
+			return;
+		}
+
+		$list = $this->GetList($page->gp_index);
+
+		if( !$list && !common::loggedIn() ){
+			return;
+		}
+
+		$current_page_lang = array_search($page->gp_index,$list);
+
+		//show the list
+		echo '<ul class="nav navbar-nav lang-dropdown-nav">';
+		echo '<li class="nav-item dropdown">';
+		echo '<a title="Languages" href="javascript:;" class="nav-link dropdown-toggle" data-toggle="dropdown">';
+		echo '<i class="fa fa-globe"></i><b class="caret"></b></a>';
+		$links = array();
+		foreach($this->avail_langs as $lang_code => $lang_label){
+
+			if( !isset($list[$lang_code]) ){
+				continue;
+			}
+
+			if( $lang_code == $current_page_lang ){
+				continue;
+			}
+
+			$index		= $list[$lang_code];
+			$title		= common::IndexToTitle($index);
+			$links[]	= common::Link($title, $lang_label, '', 'hreflang="' . $lang_code . '" class="dropdown-item"');
+		}
+
+		echo '<ul class="dropdown-menu">';
+		if( $links ){
+			echo '<li class="nav-item">';
+			echo implode('</li><li class="nav-item">', $links);
+			echo '<li>';
+		}
+
+		if( common::loggedIn() ){
+			echo '<li class="nav-item">';
+			echo common::Link(
+				'Admin_MultiLang',
+				'<i class="fa fa-cog"></i>',
+				'cmd=title_settings&index=' . $page->gp_index,
+				'class="dropdown-item" name="gpabox" title="Manage Translations"'
+			);
+			echo '</li>';
+		}
+
+		echo '</li></ul></ul>';
+	}
+
+
+	/**
+	 * Gadget Compact Language Select
+	 *
+	 */
+	public static function _Gadget_Compact_Select(){
+		$object = self::GetObject();
+		$object->Gadget_Compact_Select();
+	}
+
+	public function Gadget_Compact_Select(){
+		global $page, $addonRelativeCode;
+
+		$this->AddResources();
+
+		//admin and special pages cannot be translated
+		if( $page->pagetype != 'display' ){
+			return;
+		}
+
+		$page->css_user[] = $addonRelativeCode . '/compact_select.css';
+
+		$list = $this->GetList($page->gp_index);
+
+		if( !$list && !common::loggedIn() ){
+			return;
+		}
+
+		$current_page_lang = array_search($page->gp_index, $list);
+
+		//show the list
+		$links = array();
+		foreach($this->avail_langs as $lang_code => $lang_label){
+
+			if( !isset($list[$lang_code]) ){
+				continue;
+			}
+
+			$index			= $list[$lang_code];
+			$title			= common::IndexToTitle($index);
+			if( $lang_code == $current_page_lang ){
+				$links[]	= '<a class="current-language" hreflang="' . $lang_code . '" title="' . $lang_label . '">' . $current_page_lang . '</a>';
+			}else{
+				$links[]	= common::Link($title, $lang_code, '', 'hreflang="' . $lang_code . '" title="' . $lang_label . '"'); 
+			}
+		}
+
+		echo '<ul class="compact-lang-select">';
+
+		if( $links ){
+			echo '<li>';
+			echo implode('</li><li>', $links);
+			echo '</li>';
+		}
+
+		if( common::loggedIn() ){
+			echo '<li>';
+			echo common::Link(
+				'Admin_MultiLang', // slug
+				'<i class="fa fa-gear"></i>', // link text
+				'cmd=title_settings&index=' . $page->gp_index, // query string 
+				'name="gpabox" title="Manage Translations"' // attributes
+			);
+			echo '</li>';
+		}
+
+		echo '</ul>';
 	}
 
 
@@ -230,10 +371,10 @@ class MultiLang extends MultiLang_Common{
 
 
 	/**
-	 * Set $page->lang and $page->language
+	 * Set $page->language
 	 *
 	 * if page is translated, use language of translation
-	 * otherwise use existing $page->lang (since Typesrtter ver 5.1.1-b1) 
+	 * otherwise use existing $page-lang (since Typesrtter ver 5.1.1-b1) 
 	 * or global config language (up to Typesetter 5.1)
 	 *
 	 */

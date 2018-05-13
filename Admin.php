@@ -150,26 +150,36 @@ class MultiLang_Admin extends MultiLang_Common{
 		echo '<form method="post" action="'.common::GetUrl('Admin_MultiLang').'">';
 		echo '<input type="hidden" name="cmd" value="SaveLanguages" /> ';
 		echo '<table class="bordered checkbox_table">';
-		echo '<tr><th>&nbsp;</th><th>Code</th><th>Language</th></tr>';
+		echo '<tr>';
+		echo '<th>&nbsp;</th><th>Code</th><th>Language</th>';
+		echo '<th class="column-border">&nbsp;</th><th>Code</th><th>Language</th>';
+		echo '<th class="column-border">&nbsp;</th><th>Code</th><th>Language</th>';
+		echo '</tr>';
 		$i = 1;
 		foreach($this->avail_langs as $code => $label){
-			$class = ($i % 2 ? '' : 'even');
+			$class = ($i % 6 ? '' : 'even');
 			$attr = '';
 			if( isset($this->config['langs'][$code]) ){ // so that if $this->langs isn't set, all of the entries won't be checked
 				$class .= ' checked';
 				$attr = ' checked="checked"';
 			}
-			echo '<tr class="'.trim($class).'">';
-			echo '<td><span class="sm">'.$i.'</span> ';
+			if( $i % 3 == 1 ){
+				echo '<tr class="'.trim($class).'">';
+			}
+			echo '<td' . ($i % 3 != 1 ? ' class="column-border" ' : '') . '>';
+			echo '<span class="sm">'.str_pad($i, 3, '0', STR_PAD_LEFT).'</span> ';
 			echo '<input type="checkbox" name="langs['.$code.']" '.$attr.' />';
 			echo '</td><td>'.$code.'</td>';
-			echo '<td>'.$label.'</td></tr>';
+			echo '<td>'.$label.'</td>';
+			if( $i % 3 == 0 || $i == count($this->avail_langs) ){
+				echo '</tr>';
+			}
 			$i++;
 		}
 		echo '</table>';
 
 
-		echo '<p>';
+		echo '<p><br/>';
 		echo '<input type="submit" value="'.$langmessage['save'].'" class="gpsubmit" /> ';
 		echo '<input type="button" name="cmd" value="'.$langmessage['cancel'].'" class="admin_box_close gpcancel" />';
 		echo '</p>';

@@ -47,3 +47,6 @@ span.combobox > input{
 .checkbox_table tr.checked td{
 	background-color:#FEF9B0 !important
 	}
+.column-border{
+	border-left:2px solid rgba(0,0,0,0.125);
+	}
