@@ -14,6 +14,7 @@ class MultiLang_Common extends MultiLang_Langs{
 	protected $lang;
 	protected $language;
 
+
 	public function __construct(){
 		global $addonPathData, $config;
 
@@ -24,6 +25,7 @@ class MultiLang_Common extends MultiLang_Langs{
 		$this->GetData();
 	}
 
+
 	public function GetData(){
 
 		$config = array();
@@ -31,7 +33,11 @@ class MultiLang_Common extends MultiLang_Langs{
 			require($this->config_file);
 		}
 
-		$config += array('titles'=>array(),'lists'=>array(),'langs'=>array());
+		$config += array(
+			'titles'	=> array(),
+			'lists'		=> array(),
+			'langs'		=> array()
+		);
 
 		$this->config	= $config;
 		$this->FixConfig();
@@ -44,9 +50,6 @@ class MultiLang_Common extends MultiLang_Langs{
 			$this->lang = $this->config['primary'];
 		}
 		$this->language		= $this->avail_langs[$this->lang];
-
-
-
 
 		if( !count($this->config['langs']) ){
 			$this->langs = $this->avail_langs;
@@ -68,12 +71,16 @@ class MultiLang_Common extends MultiLang_Langs{
 			return;
 		}
 
-
 		if( $page->pagetype == 'display' ){
-			$page->admin_links[] = common::Link('Admin_MultiLang','Multi Language','cmd=TitleSettings&index='.$page->gp_index,' name="gpabox"');
+			$page->admin_links[] = common::Link(
+				'Admin_MultiLang',
+				'Multi Language',
+				'cmd=TitleSettings&index=' . $page->gp_index,
+				array('name' => 'gpabox')
+			);
 		}
-		$page->head_js[] = $addonRelativeCode.'/script.js'; //needed for admin pages as well
-		$page->css_admin[] = $addonRelativeCode.'/admin.css';
+		$page->head_js[]	= $addonRelativeCode . '/script.js'; //needed for admin pages as well
+		$page->css_admin[]	= $addonRelativeCode . '/admin.css';
 
 		$added = true;
 	}
@@ -89,18 +96,20 @@ class MultiLang_Common extends MultiLang_Langs{
 		}
 
 		foreach($this->config['titles'] as $title_index => $list){
-			if( !isset($this->config['lists'][$list]) || !is_array($this->config['lists'][$list]) ){
+			if( !isset($this->config['lists'][$list]) ||
+				!is_array($this->config['lists'][$list])
+			){
 				unset($this->config['titles'][$title_index]);
 				continue;
 			}
 
-			if( !in_array($title_index,$this->config['lists'][$list]) ){
+			if( !in_array($title_index, $this->config['lists'][$list]) ){
 				unset($this->config['titles'][$title_index]);
 				continue;
 			}
 		}
-
 	}
+
 
 	/**
 	 * Get the list for a title
@@ -116,6 +125,7 @@ class MultiLang_Common extends MultiLang_Langs{
 		return $this->lists[$list_index];
 	}
 
+
 	/**
 	 * Get the list index for a title
 	 *
@@ -124,6 +134,7 @@ class MultiLang_Common extends MultiLang_Langs{
 		if( isset($this->titles[$page_index]) ){
 			return $this->titles[$page_index];
 		}
+
 		return false;
 	}
 
@@ -137,14 +148,14 @@ class MultiLang_Common extends MultiLang_Langs{
 		$num_index = 0;
 		if( is_array($this->lists) ){
 			foreach($this->lists as $index => $values){
-				$temp = base_convert($index,36,10);
-				$num_index = max($temp,$num_index);
+				$temp = base_convert($index, 36, 10);
+				$num_index = max($temp, $num_index);
 			}
 		}
 		$num_index++;
 
 		do{
-			$index = base_convert($num_index,10,36);
+			$index = base_convert($num_index, 10, 36);
 			$num_index++;
 		}while( is_numeric($index) );
 

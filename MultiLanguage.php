@@ -20,6 +20,7 @@ class MultiLang extends MultiLang_Common{
 		return $object;
 	}
 
+
 	/**
 	 * Determine a user's language preference and redirect them to the appropriate homepage if necessary
 	 * How do we differentiate between a user requesting the home page (to get the default language content) and a request that should be redirected?
@@ -58,6 +59,7 @@ class MultiLang extends MultiLang_Common{
 		}
 	}
 
+
 	/**
 	 * Return the translated page index according to the users ACCEPT_LANGUAGE
 	 *
@@ -90,7 +92,11 @@ class MultiLang extends MultiLang_Common{
 		$temp = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
 
 		// break up string into pieces (languages and q factors)
-		preg_match_all('/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i', $temp, $lang_parse);
+		preg_match_all(
+			'/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i',
+			$temp,
+			$lang_parse
+		);
 
 		if( count($lang_parse[1]) ){
 			// create a list like "en" => 0.8
@@ -98,7 +104,9 @@ class MultiLang extends MultiLang_Common{
 
 			// set default to 1 for any without q factor
 			foreach ($langs as $lang => $val) {
-				if ($val === '') $langs[$lang] = 1;
+				if( $val === '' ){
+					$langs[$lang] = 1;
+				}
 			}
 
 			// sort list based on value
@@ -106,7 +114,6 @@ class MultiLang extends MultiLang_Common{
 		}
 
 		return $langs;
-
 	}
 
 
@@ -119,6 +126,7 @@ class MultiLang extends MultiLang_Common{
 		$object = self::GetObject();
 		$object->Gadget();
 	}
+
 
 	public function Gadget(){
 		global $page;
@@ -136,8 +144,7 @@ class MultiLang extends MultiLang_Common{
 			return;
 		}
 
-		$current_page_lang = array_search($page->gp_index,$list);
-
+		$current_page_lang = array_search($page->gp_index, $list);
 
 		//show the list
 		echo '<div class="multi_lang_select"><div>';
@@ -155,36 +162,44 @@ class MultiLang extends MultiLang_Common{
 
 			$index		= $list[$lang_code];
 			$title		= common::IndexToTitle($index);
-			$links[]	= common::Link($title,$lang_label);
+			$links[]	= common::Link($title, $lang_label);
 		}
 
 		if( $links ){
-			echo '<ul><li>';
+			echo '<ul>';
+			echo	'<li>';
 			echo implode('</li><li>', $links);
-			echo '</li></ul>';
+			echo	'</li>';
+			echo '</ul>';
 		}
 
 		if( common::loggedIn() ){
 			echo '<p>Admin: ';
-			echo common::Link('Admin_MultiLang','Manage Translations','cmd=TitleSettings&index='.$page->gp_index,' name="gpabox"');
+			echo common::Link(
+					'Admin_MultiLang',
+					'Manage Translations',
+					'cmd=TitleSettings&index=' . $page->gp_index,
+					array('name' => 'gpabox')
+				);
 			echo '</p>';
 		}
 
-		echo '</div></div>';
+		echo '</div>';
+		echo '</div>'; // /.multi_lang_select
 	}
-
 
 
 	/**
-	 * Gadget Bootstrap Dropdown Nav
+	 * Gadget Bootstrap 3 Dropdown Nav
 	 *
 	 */
-	public static function _Gadget_BS_Dropdown_Nav(){
+	public static function _Gadget_BS3_Dropdown_Nav(){
 		$object = self::GetObject();
-		$object->Gadget_BS_Dropdown_Nav();
+		$object->Gadget_BS3_Dropdown_Nav();
 	}
 
-	public function Gadget_BS_Dropdown_Nav(){
+
+	public function Gadget_BS3_Dropdown_Nav(){
 		global $page;
 
 		$this->AddResources();
@@ -205,9 +220,14 @@ class MultiLang extends MultiLang_Common{
 
 		//show the list
 		echo '<ul class="nav navbar-nav lang-dropdown-nav">';
-		echo '<li class="nav-item dropdown">';
-		echo '<a title="Languages" href="javascript:;" class="nav-link dropdown-toggle" data-toggle="dropdown">';
-		echo '<i class="fa fa-globe"></i><b class="caret"></b></a>';
+		echo	'<li class="nav-item dropdown">';
+		echo		'<a title="Languages" href="javascript:;"';
+		echo			' class="nav-link dropdown-toggle"';
+		echo			' data-toggle="dropdown">';
+		echo			'<i class="fa fa-globe">&zwnj;</i>';
+		echo			'<b class="caret"></b>';
+		echo		'</a>';
+
 		$links = array();
 		foreach($this->avail_langs as $lang_code => $lang_label){
 
@@ -221,28 +241,141 @@ class MultiLang extends MultiLang_Common{
 
 			$index		= $list[$lang_code];
 			$title		= common::IndexToTitle($index);
-			$links[]	= common::Link($title, $lang_label, '', 'hreflang="' . $lang_code . '" class="dropdown-item"');
+			$links[]	= common::Link(
+								$title,
+								$lang_label,
+								'',
+								array(
+									'hreflang'	=> $lang_code,
+									'class'		=> 'dropdown-item',
+								)
+							);
 		}
 
-		echo '<ul class="dropdown-menu">';
+		echo		'<ul class="dropdown-menu">';
+
 		if( $links ){
-			echo '<li class="nav-item">';
-			echo implode('</li><li class="nav-item">', $links);
-			echo '<li>';
+			echo			'<li class="nav-item">';
+			echo				implode('</li><li class="nav-item">', $links);
+			echo			'</li>';
 		}
 
-		if( common::loggedIn() ){
-			echo '<li class="nav-item">';
+		/*
+		// moved to Admin Links in Top Bar
+		if( common::LoggedIn() ){
+			echo			'<li class="nav-item">';
 			echo common::Link(
 				'Admin_MultiLang',
 				'<i class="fa fa-cog"></i>',
 				'cmd=title_settings&index=' . $page->gp_index,
-				'class="dropdown-item" name="gpabox" title="Manage Translations"'
+				array(
+					'class'	=> 'dropdown-item',
+					'name'	=> 'gpabox',
+					'title'	=> 'Manage Translations',
+				)
 			);
-			echo '</li>';
+			echo			'</li>';
+		}
+		*/
+
+		echo		'</ul>'; // /.dropdown-menu
+
+		echo	'</li>'; // /.nav-item.dropdown
+
+		echo '</ul>'; // /.nav.navbar-nav.lang-dropdown-nav
+	}
+
+
+	/**
+	 * Gadget Bootstrap 4 Dropdown Nav
+	 *
+	 */
+	public static function _Gadget_BS4_Dropdown_Nav(){
+		$object = self::GetObject();
+		$object->Gadget_BS4_Dropdown_Nav();
+	}
+
+
+	public function Gadget_BS4_Dropdown_Nav(){
+		global $page;
+
+		$this->AddResources();
+		common::LoadComponents('fontawesome');
+
+		//admin and special pages cannot be translated
+		if( $page->pagetype != 'display' ){
+			return;
 		}
 
-		echo '</li></ul></ul>';
+		$list = $this->GetList($page->gp_index);
+
+		if( !$list && !common::loggedIn() ){
+			return;
+		}
+
+		$current_page_lang = array_search($page->gp_index,$list);
+
+		//show the list
+		echo '<ul class="nav navbar-nav lang-dropdown-nav">';
+		echo	'<li class="nav-item dropdown">';
+		echo		'<a title="Languages" href="javascript:;"';
+		echo			' class="nav-link dropdown-toggle"';
+		echo			' data-toggle="dropdown">';
+		echo			'<i class="fa fa-globe">&zwnj;</i>';
+		echo			'<b class="caret"></b>';
+		echo		'</a>';
+
+		$links = array();
+		foreach($this->avail_langs as $lang_code => $lang_label){
+
+			if( !isset($list[$lang_code]) ){
+				continue;
+			}
+
+			if( $lang_code == $current_page_lang ){
+				continue;
+			}
+
+			$index		= $list[$lang_code];
+			$title		= common::IndexToTitle($index);
+			$links[]	= common::Link(
+								$title,
+								$lang_label,
+								'',
+								array(
+									'hreflang'	=> $lang_code,
+									'class'		=> 'dropdown-item',
+								)
+							);
+		}
+
+		echo		'<div class="dropdown-menu">';
+
+		if( $links ){
+			echo			implode('', $links);
+		}
+
+		/*
+		// moved to Admin Links in Top Bar
+		if( common::LoggedIn() ){
+			echo common::Link(
+				'Admin_MultiLang',
+				'<i class="fa fa-cog"></i>',
+				'cmd=title_settings&index=' . $page->gp_index,
+				array(
+					'class'	=> 'dropdown-item',
+					'name'	=> 'gpabox',
+					'title'	=> 'Manage Translations',
+				)
+			);
+		}
+		*/
+
+		echo		'</div>'; // /.dropdown-menu
+
+		echo	'</li>'; // /.nav-item dropdown
+
+		echo '</ul>'; // /.nav.navbar-nav.lang-dropdown-nav
 	}
 
 
@@ -254,6 +387,7 @@ class MultiLang extends MultiLang_Common{
 		$object = self::GetObject();
 		$object->Gadget_Compact_Select();
 	}
+
 
 	public function Gadget_Compact_Select(){
 		global $page, $addonRelativeCode;
@@ -286,30 +420,48 @@ class MultiLang extends MultiLang_Common{
 			$index			= $list[$lang_code];
 			$title			= common::IndexToTitle($index);
 			if( $lang_code == $current_page_lang ){
-				$links[]	= '<a class="current-language" hreflang="' . $lang_code . '" title="' . $lang_label . '">' . $current_page_lang . '</a>';
+				$links[]	= '<a class="current-language"' .
+					' hreflang="' . $lang_code . '"' .
+					' title="' . $lang_label . '">' .
+					$current_page_lang .
+					'</a>';
 			}else{
-				$links[]	= common::Link($title, $lang_code, '', 'hreflang="' . $lang_code . '" title="' . $lang_label . '"'); 
+				$links[]	= common::Link(
+					$title,
+					$lang_code,
+					'',
+					array(
+						'hreflang'	=> $lang_code,
+						'title'		=> $lang_label
+					)
+				);
 			}
 		}
 
 		echo '<ul class="compact-lang-select">';
 
 		if( $links ){
-			echo '<li>';
-			echo implode('</li><li>', $links);
-			echo '</li>';
+			echo	'<li>';
+			echo		implode('</li><li>', $links);
+			echo	'</li>';
 		}
 
+		/*
+		// moved to Admin Links in Top Bar
 		if( common::loggedIn() ){
-			echo '<li>';
+			echo	'<li>';
 			echo common::Link(
-				'Admin_MultiLang', // slug
-				'<i class="fa fa-gear"></i>', // link text
-				'cmd=title_settings&index=' . $page->gp_index, // query string 
-				'name="gpabox" title="Manage Translations"' // attributes
+				'Admin_MultiLang',
+				'<i class="fa fa-gear">&zwnj;</i>',
+				'cmd=title_settings&index=' . $page->gp_index,
+				array(
+					'name'	=> 'gpabox',
+					'title'	=> 'Manage Translations',
+				)
 			);
-			echo '</li>';
+			echo	'</li>';
 		}
+		*/
 
 		echo '</ul>';
 	}
@@ -325,9 +477,9 @@ class MultiLang extends MultiLang_Common{
 		return $object->GetMenuArray($menu);
 	}
 
+
 	public function GetMenuArray($menu){
 		global $page;
-
 
 		//which language is the current page
 		$list = $this->GetList($page->gp_index);
@@ -383,6 +535,7 @@ class MultiLang extends MultiLang_Common{
 		return $object->PageRunScript($cmd);
 	}
 
+
 	public function PageRunScript($cmd){
 		global $page, $config;
 
@@ -396,6 +549,7 @@ class MultiLang extends MultiLang_Common{
 	}
 
 }
+
 
 //for backwards compat
 global $ml_object;
