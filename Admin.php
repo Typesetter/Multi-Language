@@ -419,6 +419,13 @@ class MultiLang_Admin extends MultiLang_Common{
 					'cmd=TitleSettings&index=' . $page_index,
 					array('data-cmd' => 'gpabox')
 				);
+			echo ' &nbsp; ';
+			echo common::Link(
+					'Admin/Menu/Ajax',
+					$langmessage['Copy'],
+					'cmd=CopyForm&index=' . $page_index,
+					array('data-cmd' => 'gpabox')
+				);
 			echo		'</td>';
 			echo	'</tr>';
 			$i++;
@@ -522,6 +529,13 @@ class MultiLang_Admin extends MultiLang_Common{
 					'cmd=TitleSettings&index=' . $page_index,
 					array('data-cmd' => 'gpabox')
 				);
+			echo ' &nbsp; ';
+			echo common::Link(
+						'Admin/Menu/Ajax',
+						$langmessage['Copy'],
+						'cmd=CopyForm&index=' . $page_index,
+						array('data-cmd' => 'gpabox')
+					);
 			echo			'</td>';
 			echo		'</tr>';
 		}
@@ -936,7 +950,7 @@ class MultiLang_Admin extends MultiLang_Common{
 		}
 
 
-		foreach( $lang_lists as $lang => $indexes){
+		foreach($lang_lists as $lang => $indexes){
 			echo '<div class="ml_stats">';
 			echo '<div>';
 
@@ -950,6 +964,9 @@ class MultiLang_Admin extends MultiLang_Common{
 
 			echo	'<tbody>';
 			foreach($indexes as $index){
+				if( empty($index) || substr($index, 0, 1) == '_' ){
+					continue;
+				}
 				echo		'<tr>';
 
 				echo			'<td>';
@@ -964,6 +981,13 @@ class MultiLang_Admin extends MultiLang_Common{
 						'cmd=TitleSettings&index=' . $index,
 						array('data-cmd' => 'gpabox')
 					);
+				echo ' &nbsp; ';
+				echo common::Link(
+							'Admin/Menu/Ajax',
+							$langmessage['Copy'],
+							'cmd=CopyForm&index=' . $index,
+							array('data-cmd' => 'gpabox')
+						);
 				echo		'</td>';
 
 				echo	'</tr>';
