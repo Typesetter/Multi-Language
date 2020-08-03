@@ -85,7 +85,7 @@ class MultiLang extends MultiLang_Common{
 	public function WhichTranslation($key){
 
 		//only if translated
-		$list = $this->GetList($key);
+		$list = $this->GetVisibleList($key);
 		if( !$list ){
 			return;
 		}
