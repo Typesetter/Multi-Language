@@ -368,7 +368,6 @@ class MultiLang_Admin extends MultiLang_Common{
 			);
 		echo '</h3>';
 
-
 		$langs = $this->WhichLanguages();
 		unset($langs[$this->lang]);
 
@@ -382,9 +381,14 @@ class MultiLang_Admin extends MultiLang_Common{
 		echo		'<th width="1">&nbsp;</th>';
 		echo	'</tr>';
 
-
 		$i = 0;
 		foreach($menu as $page_index => $title_info){
+
+			if( substr($page_index, 0, 1) === "_" ){
+				// don't list external link menu entries
+				continue;
+			}
+
 			$page_list = $this->GetList($page_index);
 
 			//primary language
