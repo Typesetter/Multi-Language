@@ -12,3 +12,7 @@ ul.compact-lang-select {
     }
   }
 }
+
+html.override_admin_style li.manage-languages {
+  display: none;
+}
