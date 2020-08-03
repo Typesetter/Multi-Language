@@ -28,7 +28,7 @@ class MultiLang extends MultiLang_Common{
 	 * 	... redirect all empty paths?
 	 *
 	 */
-	public function _WhichPage($path){
+	public static function _WhichPage($path){
 		$object = self::GetObject();
 		return $object->WhichPage($path);
 	}
