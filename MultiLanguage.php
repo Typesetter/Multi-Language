@@ -149,7 +149,7 @@ class MultiLang extends MultiLang_Common{
 	public function Gadget(){
 		global $page;
 
-		$this->AddResources();
+		// $this->AddResources();
 
 		//admin and special pages cannot be translated
 		if( $page->pagetype != 'display' ){
@@ -158,7 +158,7 @@ class MultiLang extends MultiLang_Common{
 
 		$list = $this->GetList($page->gp_index);
 
-		if( !$list && !common::loggedIn() ){
+		if( !$list ){
 			return;
 		}
 
@@ -210,6 +210,11 @@ class MultiLang extends MultiLang_Common{
 	/**
 	 * Gadget Bootstrap 3 Dropdown Nav
 	 *
+	 * to be added after main menu via Layout Manager
+	 * comment or delete the line
+	 * $GP_ARRANGE = false;
+	 * in template.php
+	 *
 	 */
 	public static function _Gadget_BS3_Dropdown_Nav(){
 		$object = self::GetObject();
@@ -220,7 +225,7 @@ class MultiLang extends MultiLang_Common{
 	public function Gadget_BS3_Dropdown_Nav(){
 		global $page;
 
-		$this->AddResources();
+		// $this->AddResources();
 		common::LoadComponents('fontawesome');
 
 		//admin and special pages cannot be translated
@@ -230,7 +235,7 @@ class MultiLang extends MultiLang_Common{
 
 		$list = $this->GetList($page->gp_index);
 
-		if( !$list && !common::loggedIn() ){
+		if( !$list ){
 			return;
 		}
 
@@ -278,28 +283,8 @@ class MultiLang extends MultiLang_Common{
 			echo			'</li>';
 		}
 
-		/*
-		// moved to Admin Links in Top Bar
-		if( common::LoggedIn() ){
-			echo			'<li class="nav-item">';
-			echo common::Link(
-				'Admin_MultiLang',
-				'<i class="fa fa-cog"></i>',
-				'cmd=title_settings&index=' . $page->gp_index,
-				array(
-					'class'	=> 'dropdown-item',
-					'name'	=> 'gpabox',
-					'title'	=> 'Manage Translations',
-				)
-			);
-			echo			'</li>';
-		}
-		*/
-
 		echo		'</ul>'; // /.dropdown-menu
-
 		echo	'</li>'; // /.nav-item.dropdown
-
 		echo '</ul>'; // /.nav.navbar-nav.lang-dropdown-nav
 	}
 
@@ -307,6 +292,10 @@ class MultiLang extends MultiLang_Common{
 	/**
 	 * Gadget Bootstrap 4 Dropdown Nav
 	 *
+	 * to be added after main menu via Layout Manager
+	 * comment or delete the line
+	 * $GP_ARRANGE = false;
+	 * in template.php
 	 */
 	public static function _Gadget_BS4_Dropdown_Nav(){
 		$object = self::GetObject();
@@ -317,7 +306,7 @@ class MultiLang extends MultiLang_Common{
 	public function Gadget_BS4_Dropdown_Nav(){
 		global $page;
 
-		$this->AddResources();
+		// $this->AddResources();
 		common::LoadComponents('fontawesome');
 
 		//admin and special pages cannot be translated
@@ -327,7 +316,7 @@ class MultiLang extends MultiLang_Common{
 
 		$list = $this->GetList($page->gp_index);
 
-		if( !$list && !common::loggedIn() ){
+		if( !$list ){
 			return;
 		}
 
@@ -373,26 +362,8 @@ class MultiLang extends MultiLang_Common{
 			echo			implode('', $links);
 		}
 
-		/*
-		// moved to Admin Links in Top Bar
-		if( common::LoggedIn() ){
-			echo common::Link(
-				'Admin_MultiLang',
-				'<i class="fa fa-cog"></i>',
-				'cmd=title_settings&index=' . $page->gp_index,
-				array(
-					'class'	=> 'dropdown-item',
-					'name'	=> 'gpabox',
-					'title'	=> 'Manage Translations',
-				)
-			);
-		}
-		*/
-
 		echo		'</div>'; // /.dropdown-menu
-
 		echo	'</li>'; // /.nav-item dropdown
-
 		echo '</ul>'; // /.nav.navbar-nav.lang-dropdown-nav
 	}
 
@@ -410,14 +381,13 @@ class MultiLang extends MultiLang_Common{
 	public function Gadget_Compact_Select(){
 		global $page, $addonRelativeCode;
 
-		$this->AddResources();
+		// $this->AddResources();
+		$page->css_user[] = $addonRelativeCode . '/compact_select.css';
 
 		//admin and special pages cannot be translated
 		if( $page->pagetype != 'display' ){
 			return;
 		}
-
-		$page->css_user[] = $addonRelativeCode . '/compact_select.css';
 
 		$list = $this->GetList($page->gp_index);
 
@@ -463,23 +433,6 @@ class MultiLang extends MultiLang_Common{
 			echo		implode('</li><li>', $links);
 			echo	'</li>';
 		}
-
-		/*
-		// moved to Admin Links in Top Bar
-		if( common::loggedIn() ){
-			echo	'<li>';
-			echo common::Link(
-				'Admin_MultiLang',
-				'<i class="fa fa-gear">&zwnj;</i>',
-				'cmd=title_settings&index=' . $page->gp_index,
-				array(
-					'name'	=> 'gpabox',
-					'title'	=> 'Manage Translations',
-				)
-			);
-			echo	'</li>';
-		}
-		*/
 
 		echo '</ul>';
 	}
@@ -557,12 +510,17 @@ class MultiLang extends MultiLang_Common{
 	public function PageRunScript($cmd){
 		global $page, $config;
 
-		$lang = isset($page->lang) ? $page->lang : $config['language'];
-		$list = $this->GetList($page->gp_index);
-		$page_lang = is_array($list) && ($page_lang = array_search($page->gp_index, $list)) !== false ? $page_lang : $lang;
-		$page->lang = $page_lang;
-		$page->language = $this->avail_langs[$page_lang];
-
+		$lang			= isset($page->lang) ? $page->lang : $config['language'];
+		$page_lang		= $lang;
+		$list			= $this->GetList($page->gp_index);
+		if( is_array($list) ){
+			$in_list	= array_search($page->gp_index, $list);
+			if( $in_list !== false ){
+				$page_lang = $in_list;
+			}
+		}
+		$page->lang		= $page_lang;
+		$page->language	= $this->avail_langs[$page_lang];
 
 		if( $page->pagetype == 'display' ){
 			$page->admin_links[] = common::Link(
@@ -573,7 +531,9 @@ class MultiLang extends MultiLang_Common{
 			);
 		}
 
-		$this->AddResources();
+		if( \gp\tool::LoggedIn() ){
+			$this->AddResources();
+		}
 
 		return $cmd;
 	}
