@@ -545,6 +545,18 @@ class MultiLang extends MultiLang_Common{
 		$page->lang = $page_lang;
 		$page->language = $this->avail_langs[$page_lang];
 
+
+		if( $page->pagetype == 'display' ){
+			$page->admin_links[] = common::Link(
+				'Admin_MultiLang',
+				'<i class="fa fa-language"></i> Multi Language',
+				'cmd=TitleSettings&index=' . $page->gp_index,
+				array('data-cmd' => 'gpabox')
+			);
+		}
+
+		$this->AddResources();
+
 		return $cmd;
 	}
 

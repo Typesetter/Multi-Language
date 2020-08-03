@@ -67,18 +67,12 @@ class MultiLang_Common extends MultiLang_Langs{
 		global $page, $addonRelativeCode;
 		static $added = false;
 
+		debug('AddResources() called, $added = ' . pre($added)); // TOOD remove
+
 		if( $added ){
 			return;
 		}
 
-		if( $page->pagetype == 'display' ){
-			$page->admin_links[] = common::Link(
-				'Admin_MultiLang',
-				'Multi Language',
-				'cmd=TitleSettings&index=' . $page->gp_index,
-				array('name' => 'gpabox')
-			);
-		}
 		$page->head_js[]	= $addonRelativeCode . '/script.js'; //needed for admin pages as well
 		$page->css_admin[]	= $addonRelativeCode . '/admin.css';
 
