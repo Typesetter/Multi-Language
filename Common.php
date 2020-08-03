@@ -71,8 +71,8 @@ class MultiLang_Common extends MultiLang_Langs{
 			return;
 		}
 
-		$page->head_js[]	= $addonRelativeCode . '/script.js'; //needed for admin pages as well
-		$page->css_admin[]	= $addonRelativeCode . '/admin.css';
+		\gp\tool\Plugins::js('script.js', false);
+		\gp\tool\Plugins::css('admin.css', false);
 
 		$added = true;
 	}
