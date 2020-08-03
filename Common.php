@@ -67,8 +67,6 @@ class MultiLang_Common extends MultiLang_Langs{
 		global $page, $addonRelativeCode;
 		static $added = false;
 
-		debug('AddResources() called, $added = ' . pre($added)); // TOOD remove
-
 		if( $added ){
 			return;
 		}
