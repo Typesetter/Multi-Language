@@ -27,22 +27,29 @@ class MultiLang extends MultiLang_Common{
 	 * 	... redirect all empty paths?
 	 *
 	 */
-	public function _WhichPage($path){
+	public static function _WhichPage($path){
 		$object = self::GetObject();
 		return $object->WhichPage($path);
 	}
 
 	public function WhichPage($path){
 		global $config;
+		$degug = gpdebug;
+
+		$debug && msg('------------------ MLM WhichPage -------------------- ' . microtime());
+		$debug && msg('MLM WhichPage hook called with $path = ' . $path );
 
 		$home_title					= $config['homepath'];
 		$home_key					= $config['homepath_key'];
 		$config['homepath_key']		= false;
 		$config['homepath']			= false;
+		$config['home_auto']		= true;
 
+		$debug && msg('MLM WhichPage hook $home_title = ' . pre($home_title) );
 
 		//only if homepage
-		if( !empty($path) && $path !== $home_title ){
+		if( !empty($path) ){ // && $path !== $home_title )
+			$debug && msg('MLM WhichPage hook returns $path (' . $path . ')');
 			return $path;
 		}
 
@@ -50,11 +57,16 @@ class MultiLang extends MultiLang_Common{
 		$translated_key = $this->WhichTranslation($home_key);
 		if( !is_null($translated_key) ){
 			$home_title = common::IndexToTitle($translated_key);
+			$debug && msg('MLM WhichPage hook sets $home_title to ' . $home_title);
+			$debug && msg('Debug: $translated_key = "' . $translated_key . '", $home_title = "' . $home_title . '", $path = "' . $path . '"');
 		}
 
 		//redirect if needed
 		if( $home_title != $path ){
+			$debug && msg('MLM WhichPage hook redirecting to ' . $home_title );
 			common::Redirect(common::GetUrl($home_title));
+		}else{
+			return $path;
 		}
 	}
 
@@ -62,6 +74,10 @@ class MultiLang extends MultiLang_Common{
 	 * Return the translated page index according to the users ACCEPT_LANGUAGE
 	 *
 	 */
+	public static function _WhichTranslation($key){
+		$object = self::GetObject();
+		$object->WhichTranslation($key);
+	}
 	public function WhichTranslation($key){
 
 		//only if translated
@@ -85,9 +101,10 @@ class MultiLang extends MultiLang_Common{
 	}
 
 
-	public function RequestLangs(){
+	public static function RequestLangs(){
 		$langs = array();
 		$temp = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+		// msg('$_SERVER["HTTP_ACCEPT_LANGUAGE"] = ' . pre($temp));
 
 		// break up string into pieces (languages and q factors)
 		preg_match_all('/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i', $temp, $lang_parse);
@@ -231,16 +248,18 @@ class MultiLang extends MultiLang_Common{
 			echo '<li>';
 		}
 
+		/*
 		if( common::loggedIn() ){
 			echo '<li class="nav-item">';
 			echo common::Link(
 				'Admin_MultiLang',
-				'<i class="fa fa-cog"></i>',
+				'<i class="fa fa-cog"></i> Manage Langs',
 				'cmd=title_settings&index=' . $page->gp_index,
 				'class="dropdown-item" name="gpabox" title="Manage Translations"'
 			);
 			echo '</li>';
 		}
+		*/
 
 		echo '</li></ul></ul>';
 	}
@@ -265,7 +284,7 @@ class MultiLang extends MultiLang_Common{
 			return;
 		}
 
-		$page->css_user[] = $addonRelativeCode . '/compact_select.css';
+		// $page->css_user[] = $addonRelativeCode . '/compact_select.css';
 
 		$list = $this->GetList($page->gp_index);
 
@@ -276,7 +295,8 @@ class MultiLang extends MultiLang_Common{
 		$current_page_lang = array_search($page->gp_index, $list);
 
 		//show the list
-		$links = array();
+		echo '<ul class="compact-lang-select">';
+
 		foreach($this->avail_langs as $lang_code => $lang_label){
 
 			if( !isset($list[$lang_code]) ){
@@ -285,31 +305,31 @@ class MultiLang extends MultiLang_Common{
 
 			$index			= $list[$lang_code];
 			$title			= common::IndexToTitle($index);
-			if( $lang_code == $current_page_lang ){
-				$links[]	= '<a class="current-language" hreflang="' . $lang_code . '" title="' . $lang_label . '">' . $current_page_lang . '</a>';
-			}else{
-				$links[]	= common::Link($title, $lang_code, '', 'hreflang="' . $lang_code . '" title="' . $lang_label . '"'); 
+			if( $lang_code != $current_page_lang ){
+				//echo '<li class="current-language"><a hreflang="' . $lang_code . '" title="' . $lang_label . '">' . $current_page_lang . '</a></li>';
+			//}else{
+				echo '<li class="nav-item">';
+				echo common::Link(
+					$title, 
+					$lang_label, //$lang_code, 
+					'', 
+					'class="nav-link" hreflang="' . $lang_code . '" title="' . $lang_label . '"');
+				echo '</li>'; 
 			}
 		}
 
-		echo '<ul class="compact-lang-select">';
-
-		if( $links ){
-			echo '<li>';
-			echo implode('</li><li>', $links);
-			echo '</li>';
-		}
-
+		/*
 		if( common::loggedIn() ){
-			echo '<li>';
+			echo '<li class="manage-languages nav-item">';
 			echo common::Link(
 				'Admin_MultiLang', // slug
-				'<i class="fa fa-gear"></i>', // link text
-				'cmd=title_settings&index=' . $page->gp_index, // query string 
-				'name="gpabox" title="Manage Translations"' // attributes
+				'<i class="fa fa-language"></i>', // link text
+				'cmd=TitleSettings&index=' . $page->gp_index, // query string 
+				'class="nav-link" name="gpabox" title="Manage Translations"' // attributes
 			);
 			echo '</li>';
 		}
+		*/
 
 		echo '</ul>';
 	}
@@ -391,6 +411,15 @@ class MultiLang extends MultiLang_Common{
 		$page_lang = is_array($list) && ($page_lang = array_search($page->gp_index, $list)) !== false ? $page_lang : $lang;
 		$page->lang = $page_lang;
 		$page->language = $this->avail_langs[$page_lang];
+
+		if( \gp\tool::LoggedIn() ){
+			$page->admin_links[] = array(
+				'Admin_MultiLang', // slug
+				'<i class="fa fa-language"></i> Multi-Language', // link text
+				'cmd=TitleSettings&index=' . $page->gp_index, // query string 
+				'data-cmd="gpabox"" title="Manage Translations"' // attributes
+			);
+		}
 
 		return $cmd;
 	}
