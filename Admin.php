@@ -904,12 +904,11 @@ class MultiLang_Admin extends MultiLang_Common{
 	}
 
 	public function SmLinks(){
-		echo '<p class="sm">';
+		echo '<p class="sm more_admin_links">';
 		echo common::Link('Admin_MultiLang', 'Administration');
 		echo ' - ';
 		echo common::Link('Admin_MultiLang', 'Languages', 'cmd=SelectLanguages');
 		echo '</p>';
-
 	}
 
 

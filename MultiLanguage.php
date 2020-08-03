@@ -36,20 +36,40 @@ class MultiLang extends MultiLang_Common{
 	public function WhichPage($path){
 		global $config;
 
+		/*
+		debug('passed $path = ' . $path);									// TODO remove
+		debug('$config[\'homepath\'] = ' . $config['homepath']);			// TODO remove
+		debug('$config[\'homepath_key\'] = ' . $config['homepath_key']);	// TODO remove
+		*/
+
 		$home_title					= $config['homepath'];
 		$home_key					= $config['homepath_key'];
 		$config['homepath_key']		= false;
 		$config['homepath']			= false;
 
 
-		//only if homepage
+		/*
 		if( !empty($path) && $path !== $home_title ){
+			//not homepage
+			return $path;
+		}
+		*/
+
+		if( !empty($path) ){
+			// we have a $path, so don't redirect
 			return $path;
 		}
 
-
 		$translated_key = $this->WhichTranslation($home_key);
+		// msg('$translated_key =' . pre($translated_key)); // TODO remove
+
+		if( is_null($translated_key) ){
+			// no translation for the homepage
+			return $path;
+		}
+
 		if( !is_null($translated_key) ){
+			// found translation for the homepage
 			$home_title = common::IndexToTitle($translated_key);
 		}
 

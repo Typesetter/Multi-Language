@@ -55,3 +55,7 @@ span.combobox > input {
 .column-border {
 	border-left: 2px solid rgba(0,0,0,0.125);
 }
+
+.more_admin_links {
+	margin-top: 0.6em;
+}
