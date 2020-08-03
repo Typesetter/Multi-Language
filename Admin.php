@@ -562,10 +562,10 @@ class MultiLang_Admin extends MultiLang_Common{
 	public function Select($name, $data_source, $default=''){
 		echo '<div>';
 		echo '<span class="gpinput combobox" data-source="' . $data_source . '">';
-		echo '<input type="text" name="' . $name . '"';
-		echo	' value="' . htmlspecialchars($default) . '"';
-		echo	' class="combobox" />';
-		echo '</span>';
+		echo	'<input type="text" name="' . $name . '"';
+		echo		' value="' . htmlspecialchars($default) . '"';
+		echo		' class="combobox" />';
+		echo	'</span>';
 		echo '</div>';
 	}
 
@@ -713,35 +713,37 @@ class MultiLang_Admin extends MultiLang_Common{
 
 		echo '<div>';
 		echo '<form method="post" action="' . common::GetUrl('Admin_MultiLang') . '">';
-		echo '<input type="hidden" name="cmd" value="TitleSettingsSave" />';
-		echo '<input type="hidden" name="index" value="' . $page_index . '" />';
+		echo	'<input type="hidden" name="cmd" value="TitleSettingsSave" />';
+		echo	'<input type="hidden" name="index" value="' . $page_index . '" />';
 
-		echo '<h3>Page Settings</h3>';
+		echo	'<h3>Page Settings</h3>';
 
-		echo '<table class="bordered">';
-		echo	'<tr>';
-		echo		'<th>Language</th>';
-		echo		'<th>Title</th></tr>';
-		echo		'<th>Options</th>';
-		echo	'</tr>';
+		echo	'<table class="bordered full_width">';
+		echo		'<tr>';
+		echo			'<th>Language</th>';
+		echo			'<th>Title</th>';
+		echo			'<th>Options</th>';
+		echo		'</tr>';
 
 		//not set yet
 		if( !$list ){
 			$in_menu	= $this->InMenu($page_index);
 			echo	'<tr>';
+
 			echo 		'<td>';
 			if( $in_menu ){
 				echo $this->language;
 			}else{
 				$this->Select('from_lang', '#lang_data');
 			}
-
 			echo		'</td>';
+
 			echo		'<td>';
 			$title = common::IndexToTitle($page_index);
 			echo common::Link_Page($title);
 			echo		'</td>';
-			echo		'<td>';
+
+			echo		'<td>&nbsp;</td>';
 
 			echo	'</tr>';
 		}
