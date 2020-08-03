@@ -698,7 +698,7 @@ class MultiLang_Admin extends MultiLang_Common{
 	 * Language selection popup
 	 *
 	 */
-	public function TitleSettings( $args = array() ){
+	public function TitleSettings($args=array()){
 		global $gp_titles, $langmessage, $langmessage, $gp_index;
 
 		$args += array('to_lang' => '', 'to_slug' => '');
@@ -711,7 +711,7 @@ class MultiLang_Admin extends MultiLang_Common{
 
 		$list		= $this->GetList($page_index);
 
-		echo '<div>';
+		echo '<div class="mlm_title_settings_box">';
 		echo '<form method="post" action="' . common::GetUrl('Admin_MultiLang') . '">';
 		echo	'<input type="hidden" name="cmd" value="TitleSettingsSave" />';
 		echo	'<input type="hidden" name="index" value="' . $page_index . '" />';
@@ -831,7 +831,10 @@ class MultiLang_Admin extends MultiLang_Common{
 		echo	'\'>';
 		echo '</span>';
 
-		echo '</div>';
+		// since 5.2 gpabox is fixed so we need space for the autocomplete dropdown
+		echo '<div class="mlm_box_spacer"></div>';
+
+		echo '</div>'; // /.mlm_title_settings_box
 	}
 
 
