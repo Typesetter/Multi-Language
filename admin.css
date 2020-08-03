@@ -20,7 +20,7 @@
 span.combobox {
 	position: relative;
 	display: inline-block;
-	padding: 1px 1px 0 1px !important;
+	padding: 0 !important;
 	overflow: hidden;
 }
 
@@ -31,7 +31,7 @@ span.combobox:after {
 	font-size: 14px;
 	color: #666;
 	content: '\f0d7';
-	padding: 2px 5px 5px 5px;
+	padding: 3px 5px 5px 5px;
 	border-left: 1px solid #eee;
 	background: #fff;
 	cursor: pointer;
@@ -41,7 +41,8 @@ span.combobox > input {
 	margin: 0 !important;
 	border: 0 none !important;
 	background: #fff !important;
-	padding: 2px !important;
+	padding: 3px !important;
+	box-shadow: none !important;
 }
 
 .checkbox_table tr td {
@@ -58,4 +59,12 @@ span.combobox > input {
 
 .more_admin_links {
 	margin-top: 0.6em;
+}
+
+#gp_admin_html #gp_admin_box .ui-autocomplete {
+	max-height: 150px;
+}
+
+.mlm_box_spacer {
+	height: 100px;
 }
