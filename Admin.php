@@ -10,7 +10,7 @@ class MultiLang_Admin extends MultiLang_Common{
 	public function __construct(){
 		global $config;
 
-		$config += array('menus'=>array());
+		$config += array('menus' => array());
 
 		parent::__construct();
 

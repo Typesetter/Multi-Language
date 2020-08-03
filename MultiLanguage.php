@@ -50,7 +50,7 @@ class MultiLang extends MultiLang_Common{
 
 		/*
 		if( !empty($path) && $path !== $home_title ){
-			//not homepage
+			// not homepage
 			return $path;
 		}
 		*/
@@ -64,16 +64,14 @@ class MultiLang extends MultiLang_Common{
 		// msg('$translated_key =' . pre($translated_key)); // TODO remove
 
 		if( is_null($translated_key) ){
-			// no translation for the homepage
-			return $path;
+			// no translation found for the homepage
+			return $home_title;
 		}
 
-		if( !is_null($translated_key) ){
-			// found translation for the homepage
-			$home_title = common::IndexToTitle($translated_key);
-		}
+		// translation found
+		$home_title = common::IndexToTitle($translated_key);
 
-		//redirect if needed
+		// redirect if needed
 		if( $home_title != $path ){
 			common::Redirect(common::GetUrl($home_title));
 		}
