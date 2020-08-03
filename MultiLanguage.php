@@ -149,16 +149,13 @@ class MultiLang extends MultiLang_Common{
 	public function Gadget(){
 		global $page;
 
-		// $this->AddResources();
-
 		//admin and special pages cannot be translated
 		if( $page->pagetype != 'display' ){
 			return;
 		}
 
-		$list = $this->GetList($page->gp_index);
-
-		if( !$list ){
+		$list = $this->GetVisibleList($page->gp_index);
+		if( count($list) < 2 ){
 			return;
 		}
 
@@ -225,7 +222,6 @@ class MultiLang extends MultiLang_Common{
 	public function Gadget_BS3_Dropdown_Nav(){
 		global $page;
 
-		// $this->AddResources();
 		common::LoadComponents('fontawesome');
 
 		//admin and special pages cannot be translated
@@ -233,9 +229,8 @@ class MultiLang extends MultiLang_Common{
 			return;
 		}
 
-		$list = $this->GetList($page->gp_index);
-
-		if( !$list ){
+		$list = $this->GetVisibleList($page->gp_index);
+		if( count($list) < 2 ){
 			return;
 		}
 
@@ -306,7 +301,6 @@ class MultiLang extends MultiLang_Common{
 	public function Gadget_BS4_Dropdown_Nav(){
 		global $page;
 
-		// $this->AddResources();
 		common::LoadComponents('fontawesome');
 
 		//admin and special pages cannot be translated
@@ -314,9 +308,8 @@ class MultiLang extends MultiLang_Common{
 			return;
 		}
 
-		$list = $this->GetList($page->gp_index);
-
-		if( !$list ){
+		$list = $this->GetVisibleList($page->gp_index);
+		if( count($list) < 2 ){
 			return;
 		}
 
@@ -381,7 +374,7 @@ class MultiLang extends MultiLang_Common{
 	public function Gadget_Compact_Select(){
 		global $page, $addonRelativeCode;
 
-		// $this->AddResources();
+
 		$page->css_user[] = $addonRelativeCode . '/compact_select.css';
 
 		//admin and special pages cannot be translated
@@ -389,9 +382,8 @@ class MultiLang extends MultiLang_Common{
 			return;
 		}
 
-		$list = $this->GetList($page->gp_index);
-
-		if( !$list && !common::loggedIn() ){
+		$list = $this->GetVisibleList($page->gp_index);
+		if( count($list) < 2 ){
 			return;
 		}
 

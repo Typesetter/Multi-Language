@@ -104,6 +104,31 @@ class MultiLang_Common extends MultiLang_Langs{
 
 
 	/**
+	 * Get the list of only non-private pages for a title
+	 * when logged-in private pages will be included
+	 *
+	 */
+	public function GetVisibleList($page_index){
+		global $gp_titles;
+
+		$list		= $this->GetList($page_index);
+		if( \gp\tool::LoggedIn() ){
+			return $list;
+		}
+
+		$vis_list	= array();
+
+		foreach($list as $lang => $index){
+			if( empty($gp_titles[$index]['vis']) ){
+				$vis_list[$lang] = $index;
+			}
+		}
+
+		return $vis_list;
+	}
+
+
+	/**
 	 * Get the list for a title
 	 *
 	 */
