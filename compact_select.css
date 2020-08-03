@@ -1,0 +1,31 @@
+ul.compact-lang-select {
+	list-style: none;
+	padding: 0;
+	margin: 0 -0.55em;
+}
+
+ul.compact-lang-select li {
+	display: inline-block;
+	margin: 0;
+	padding: 0;
+	border-right: 1px solid rgba(127, 127, 127, 0.3); 
+}
+
+ul.compact-lang-select li:last-child {
+	border-right: none transparent; 
+}
+
+ul.compact-lang-select li a {
+	padding: 0 0.5em;
+	font-weight: normal;
+	text-transform: uppercase;
+}
+
+ul.compact-lang-select li a:hover,
+ul.compact-lang-select li a:active {
+	text-decoration: none;
+}
+
+ul.compact-lang-select li a.current-language {
+	font-weight: bold;
+}

@@ -1,49 +1,70 @@
-
-.ml_stats{
-	width:50%;
-	min-width:350px;
-	display:inline-block;
-	vertical-align:top;
-	margin-bottom:1em;
+.ml_stats {
+	width: 50%;
+	min-width: 350px;
+	display: inline-block;
+	vertical-align: top;
+	margin-bottom: 1em;
 }
-.ml_stats > div{
-	margin:0 20px 20px 0;
-	border-left:1px solid #ddd;
-	border-right:1px solid #ddd;
+
+.ml_stats > div {
+	margin: 0 20px 20px 0;
+	border-left: 1px solid #ddd;
+	border-right: 1px solid #ddd;
 	}
 
-.ml_stats .bordered{
-	width:100%;
-	margin:0;
+.ml_stats .bordered {
+	width: 100%;
+	margin: 0;
 	}
 
-span.combobox{
-	position:relative;
-	display:inline-block;
-	padding:1px 1px 0 1px !important;
-	overflow:hidden;
-	}
-span.combobox:after{
-	position:absolute;
-	right:0;
-	font-size:10px;
-	color:#666;
-	content:"\25BC";
-	padding:2px 5px 5px 5px;
-	border-left:1px solid #eee;
-	background:#fff;
-	cursor:pointer;
-	}
+span.combobox {
+	position: relative;
+	display: inline-block;
+	padding: 0 !important;
+	overflow: hidden;
+}
 
-span.combobox > input{
-	margin:0 !important;
-	border:0 none !important;
-	background:#fff !important;
-	padding: 2px !important;
-	}
-.checkbox_table tr td{
-	cursor:pointer;
-	}
-.checkbox_table tr.checked td{
-	background-color:#FEF9B0 !important
-	}
+span.combobox:after {
+	position: absolute;
+	right: 0;
+	font-family: FontAwesome;
+	font-size: 14px;
+	color: #666;
+	content: '\f0d7';
+	padding: 3px 5px 5px 5px;
+	border-left: 1px solid #eee;
+	background: #fff;
+	cursor: pointer;
+}
+
+span.combobox > input {
+	margin: 0 !important;
+	border: 0 none !important;
+	background: #fff !important;
+	padding: 3px !important;
+	box-shadow: none !important;
+}
+
+.checkbox_table tr td {
+	cursor: pointer;
+}
+
+.checkbox_table tr.checked td {
+	background-color: #FEF9B0 !important
+}
+
+.column-border {
+	border-left: 2px solid rgba(0,0,0,0.125);
+}
+
+#gp_admin_html .more_admin_links {
+	margin-top: 1em;
+}
+
+#gp_admin_html #gp_admin_box .ui-autocomplete {
+	max-height: 150px;
+}
+
+.mlm_box_spacer {
+	height: 100px;
+}
